@@ -1,0 +1,14 @@
+Essentials
+7zip.7zip
+CrystalDewWorld.CrystalDiskInfo
+Discord.Discord
+DolphinEmulator.Dolphin
+Google.Chrome
+GuinpinSoft.MakeMKV
+Microsoft.PowerShell
+Microsoft.VisualStudioCode
+Mozilla.Firefox
+Neovim.Neovim
+Ookla.Speedtest.CLI
+Spotify.Spotify
+VideoLAN.VLC

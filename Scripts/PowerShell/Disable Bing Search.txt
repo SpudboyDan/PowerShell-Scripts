@@ -1,0 +1,9 @@
+Copy this in Powershell Running as admin
+
+Removes the Bing Search function from the Windows Search bar
+
+New-ItemProperty HKCU:\Software\Microsoft\Windows\CurrentVersion\Search -Name BingSearchEnabled -PropertyType Dword -Value 00000000;
+
+Removes CoPilot
+
+reg add HKCU\Software\Policies\Microsoft\Windows\WindowsCopilot /v TurnOffWindowsCopilot /t REG_DWORD /d 1 /f 

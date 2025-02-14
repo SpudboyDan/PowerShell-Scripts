@@ -1,0 +1,10 @@
+IDE
+Apache.NetBeans
+Git.Git
+GNU.Emacs
+Microsoft.SmallBasic
+Microsoft.VisualStudioCode
+Microsoft.VisualStudioCode.CLI
+MSPaintIDE.MSPaintIDE
+Notepad++.Notepad++
+Vim.Vim

@@ -1,0 +1,9 @@
+Entertainment
+Cockatrice.Cockatrice
+Discord.Discord
+DolphinEmulator.Dolphin
+DOSBox.DOSBox
+Smogon.PokemonShowdown
+Spotify.Spotify
+ThePowderToy.ThePowderToy
+Valve.Steam
