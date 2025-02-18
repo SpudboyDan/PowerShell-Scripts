@@ -26,14 +26,14 @@ function Disable-NewOutlook
 		{
 			# Expands username to its corresponding SID (Security ID) for explicit targeting of each Registry hive.
 			$sid = (& Get-LocalUser -Name $user).SID.Value;
-			Set-Location Registry::HKU\$sid -ErrorAction stop;
+			Set-Location Registry::HKU\$sid -ErrorAction Stop;
 		}
 	
 		catch
 		{
 			# Returns to top of loop if Registry cannot be accessed.
 			Write-Host "Unable to set working location for $user`'s Registry.";
-			continue
+			Continue
 		}
 	
 		if ((Test-Path -Path "$hkuPath\General") -eq $True)
@@ -73,7 +73,7 @@ function Disable-NewOutlookOffline
 
 		try
 		{
-			Set-Location -Path Registry::HKU\$user -ErrorAction stop;
+			Set-Location -Path Registry::HKU\$user -ErrorAction Stop;
 		}
 		
 		catch
@@ -83,7 +83,7 @@ function Disable-NewOutlookOffline
 			Write-Host "Unable to set working location (offline) for $user`'s Registry.";
 			[System.GC]::Collect();
 			reg unload HKU\$user *>$null;
-			continue
+			Continue
 		}
 		
 		if ((Test-Path -Path "$hkuPath\General") -eq $True)
