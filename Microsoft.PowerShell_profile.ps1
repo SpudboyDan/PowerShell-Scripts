@@ -7,5 +7,5 @@
 #*================================================================================
 Print-Version;
 Set-Keybinds;
-Write-Host "Welcome back, Lane" -foregroundcolor Red;
+Write-Host "Welcome back, Lane" -ForegroundColor Red;
 

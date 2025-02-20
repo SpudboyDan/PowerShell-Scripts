@@ -12,7 +12,7 @@
 #*================================================================================
 function Print-Version
 	{
-  		$hostversion="$($Host.Version.Major)`.$($Host.Version.Minor)";
+  		$hostversion = "$($Host.Version.Major)`.$($Host.Version.Minor)";
 		$Host.UI.RawUI.WindowTitle = "PowerShell $hostversion";
 	}
 
@@ -51,12 +51,12 @@ function Get-DuplicatesFast
 			$true	{Get-ChildItem -File -Recurse | Group-Object -Property Length | `
 				Where-Object {$_.Count -gt 1} | foreach {$_.Group} | Get-FileHash | `
 				Group-Object -Property Hash | Where-Object {$_.Count -gt 1} | `
-				foreach {$_.Group} | Select-Object -Skip 1}
+				foreach {$_.Group} | Select-Object}
 
 			$false	{Get-ChildItem -File | Group-Object -Property Length | `
 				Where-Object {$_.Count -gt 1} | foreach {$_.Group} | Get-FileHash | `
 				Group-Object -Property Hash | Where-Object {$_.Count -gt 1} | `
-				foreach {$_.Group} | Select-Object -Skip 1}
+				foreach {$_.Group} | Select-Object}
 		}
 	}
 
@@ -85,9 +85,9 @@ function Get-DuplicatesFastest
 		switch ($Recurse)
 		{
 			$true	{Get-ChildItem -File -Recurse | Group-Object -Property Length | `
-				Where-Object {$_.Count -gt 1} | foreach {$_.Group} | Select-Object -Skip 1}
+				Where-Object {$_.Count -gt 1} | foreach {$_.Group} | Select-Object}
 
 			$false	{Get-ChildItem -File | Group-Object -Property Length | `
-				Where-Object {$_.Count -gt 1} | foreach {$_.Group} | Select-Object -Skip 1}
+				Where-Object {$_.Count -gt 1} | foreach {$_.Group} | Select-Object}
 		}
 	}
