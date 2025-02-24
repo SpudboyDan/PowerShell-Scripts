@@ -13,11 +13,20 @@
 #*================================================================================
 function Download-AdultSwim
 	{
-		param ($Uri = $(throw "Download-Videos: Invalid URI: The hostname could not be parsed."))
-		$links = (Invoke-WebRequest -Uri $Uri).Links.Href | Select-String -Pattern ("$($Uri.Replace('https://www.adultswim.com',''))" + "/[a-z0-9\-]+")
-		foreach ($link in $links)
+		param ([Parameter(Mandatory = $True, Position = 0)] [string]$Uri)
+
+		try
 		{
-			yt-dlp "https://www.adultswim.com$link"
+			$links = (Invoke-WebRequest -Uri $Uri).Links.Href | Select-String -Pattern ("$($Uri.Replace('https://www.adultswim.com',''))" + "/[a-z0-9\-]+")
+			foreach ($link in $links)
+			{
+				yt-dlp "https://www.adultswim.com$link"
+			}
+		}
+
+		catch
+		{
+			$PSCmdlet.ThrowTerminatingError($PSItem)
 		}
 	}
 
