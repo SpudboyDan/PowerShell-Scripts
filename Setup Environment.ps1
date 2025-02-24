@@ -3,23 +3,22 @@
 # Profile setup and utilities
 # ================================================================================
 # Functions
-# 	Print-Version
-# 	Set-Keybinds
+#	Download-AdultSwim
 # 	Get-Duplicates
 # 	Get-DuplicatesFast
 # 	Get-DuplicatesFaster
 # 	Get-DuplicatesFastest
+# 	Print-Version
+# 	Set-Keybinds
 #*================================================================================
-function Print-Version
+function Download-AdultSwim
 	{
-  		$hostversion = "$($Host.Version.Major)`.$($Host.Version.Minor)";
-		$Host.UI.RawUI.WindowTitle = "PowerShell $hostversion";
-	}
-
-function Set-Keybinds
-	{
-		Set-PSReadLineKeyHandler -Chord Shift+F1 -Function ForwardChar;
-		Set-PSReadLineKeyHandler -Chord Shift+F2 -Function ForwardWord;
+		param ($Uri = $(throw "Download-Videos: Invalid URI: The hostname could not be parsed."))
+		$links = (Invoke-WebRequest -Uri $Uri).Links.Href | Select-String -Pattern ("$($Uri.Replace('https://www.adultswim.com',''))" + "/[a-z0-9\-]+")
+		foreach ($link in $links)
+		{
+			yt-dlp "https://www.adultswim.com$link"
+		}
 	}
 
 function Get-Duplicates 
@@ -90,4 +89,16 @@ function Get-DuplicatesFastest
 			$false	{Get-ChildItem -File | Group-Object -Property Length | `
 				Where-Object {$_.Count -gt 1} | foreach {$_.Group} | Select-Object}
 		}
+	}
+
+function Print-Version
+	{
+  		$hostversion = "$($Host.Version.Major)`.$($Host.Version.Minor)";
+		$Host.UI.RawUI.WindowTitle = "PowerShell $hostversion";
+	}
+
+function Set-Keybinds
+	{
+		Set-PSReadLineKeyHandler -Chord Shift+F1 -Function ForwardChar;
+		Set-PSReadLineKeyHandler -Chord Shift+F2 -Function ForwardWord;
 	}
