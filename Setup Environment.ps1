@@ -13,7 +13,7 @@
 #*================================================================================
 function Download-AdultSwim
 	{
-		param ([Parameter(Mandatory = $True, Position = 0)] [string]$Uri)
+		param ([Parameter(Mandatory = $true, Position = 0)] [string]$Uri)
 
 		try
 		{

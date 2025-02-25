@@ -25,3 +25,9 @@ $grouper.InputObject = [System.Management.Automation.PSObject]::new($collection)
 $grouper.Property = [string]$collection.Length
 $collection = [System.Collections.ObjectModel.Collection[PSObject]]::new()
 $collection = [System.Collections.Generic.SortedList[string,long]]::new()
+$recursionOptions = [System.IO.EnumerationOptions]::new()
+$directory = [System.IO.DirectoryInfo]::new("$PWD").EnumerateFiles('*.*',$recursionOptions)
+
+$properties = @{ RecurseSubdirectories = [bool]1; IgnoreInaccessible = [bool]1; BufferSize = [int]0; AttributesToSkip = [System.IO.FileAttributes]::None; MatchCasing = [System.IO.MatchCasing]::PlatformDefault; MatchType = [System.IO.MatchType]::Simple; MaxRecursionDepth = [int]2147483647; ReturnSpecialDirectories = [bool]1 };
+$enumerationOptions = New-Object -TypeName System.IO.EnumerationOptions -Property $properties;
+$directory = [System.IO.DirectoryInfo]::new("$PWD").EnumerateFiles('*.*',$enumerationOptions);
