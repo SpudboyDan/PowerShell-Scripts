@@ -13,7 +13,7 @@ function Send-ScreeningAlert
 }
 
 # Declare variables.
-[int32]$screeningNumber = 120;
+[int32]$screeningNumber = 121;
 [string]$encryptedSecureString = "76492d1116743f0423413b16050a5345MgB8AEoAYwA5AHYAQQBjAGgAQQBaAE8AUQBIAHEANAB6AEgAUgB6AEwANwA2AEEAPQA9AHwAOQA3AGEAYgBmAGMAMgBiADIANwA5AGUAMQA3AGIAZgA1AGUANwBkADQAYQBjAGEAZQAzADEAZAA4AGIAMAA2ADYAZQA0AGIAMAA0AGIANQBhAGQAMwBhADcANwA5AGYANABiAGIAZgAxADcAZgA0AGQANwA2AGMAYQA1AGIAZgA=";
 [string]$matchExpressionRichardson = '\"cinemaId\"\:\"0701\"\,\"sessionId\"\:\"[0-9]+\"\,\"presentationSlug\"\:\"special-event-secret-screening-[0-9]+\"\,\"legacySlug\"\:\"secret-screening-[0-9]+\"\,\"status\"\:\"ONSALE\"';
 [string]$matchExpressionCedars = '\"cinemaId\"\:\"0702\"\,\"sessionId\"\:\"[0-9]+\"\,\"presentationSlug\"\:\"special-event-secret-screening-[0-9]+\"\,\"legacySlug\"\:\"secret-screening-[0-9]+\"\,\"status\"\:\"ONSALE\"';
@@ -26,7 +26,13 @@ $mailCred = New-Object System.Management.Automation.PSCredential('metrotech', $s
 switch ((Invoke-WebRequest -Uri "https://drafthouse.com/s/mother/v2/schedule/presentation/dfw/special-event-secret-screening-$screeningNumber" -ErrorAction Stop).Content) 
 {
 	{$_ -notmatch $matchExpressionRichardson} {Continue}
-	{$_ -notmatch $matchExpressionCedars} {Stop}
+	{$_ -notmatch $matchExpressionCedars} {Continue}
 	{$_ -imatch $matchExpressionRichardson} {Send-ScreeningAlert;}
+	{$_ -imatch $matchExpressionCedars} {Send-ScreeningAlert;}
+}
+
+switch ((Invoke-WebRequest -Uri "https://drafthouse.com/s/mother/v2/schedule/presentation/dfw/special-event-secret-screening-120" -ErrorAction Stop).Content) 
+{
+	{$_ -notmatch $matchExpressionCedars} {Stop}
 	{$_ -imatch $matchExpressionCedars} {Send-ScreeningAlert;}
 }
