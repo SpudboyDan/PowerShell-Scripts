@@ -8,4 +8,3 @@
 Print-Version;
 Set-Keybinds;
 Write-Host "Welcome back, Lane" -ForegroundColor Red;
-

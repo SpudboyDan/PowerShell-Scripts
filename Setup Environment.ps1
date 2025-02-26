@@ -8,6 +8,7 @@
 # 	Get-DuplicatesFast
 # 	Get-DuplicatesFaster
 # 	Get-DuplicatesFastest
+# 	Play-Song
 # 	Print-Version
 # 	Set-Keybinds
 #*================================================================================
@@ -17,10 +18,10 @@ function Download-AdultSwim
 
 		try
 		{
-			$links = (Invoke-WebRequest -Uri $Uri).Links.Href | Select-String -Pattern ("$($Uri.Replace('https://www.adultswim.com',''))" + "/[a-z0-9\-]+")
-			foreach ($link in $links)
+			$Links = (Invoke-WebRequest -Uri $Uri).Links.Href | Select-String -Pattern ("$($Uri.Replace('https://www.adultswim.com',''))" + "/[a-z0-9\-]+")
+			foreach ($Link in $Links)
 			{
-				yt-dlp "https://www.adultswim.com$link"
+				yt-dlp "https://www.adultswim.com$Link"
 			}
 		}
 
@@ -100,10 +101,29 @@ function Get-DuplicatesFastest
 		}
 	}
 
+function Play-Song
+	{
+		[Console]::Beep(466,330);
+		[Console]::Beep(310,495);
+		[Console]::Beep(620,330);
+		[Console]::Beep(522,185);
+		[Console]::Beep(466,330);
+		[Console]::Beep(310,495);
+		[Console]::Beep(466,330);
+		[Console]::Beep(414,185);
+		[Console]::Beep(392,185);
+		[Console]::Beep(392,185);
+		[Console]::Beep(414,185);
+		[Console]::Beep(466,185);
+		[Console]::Beep(310,330);
+		[Console]::Beep(350,330);
+		[Console]::Beep(392,660);
+	}
+
 function Print-Version
 	{
-  		$hostversion = "$($Host.Version.Major)`.$($Host.Version.Minor)";
-		$Host.UI.RawUI.WindowTitle = "PowerShell $hostversion";
+  		$HostVersion = "$($Host.Version.Major)`.$($Host.Version.Minor)";
+		$Host.UI.RawUI.WindowTitle = "PowerShell $HostVersion";
 	}
 
 function Set-Keybinds
