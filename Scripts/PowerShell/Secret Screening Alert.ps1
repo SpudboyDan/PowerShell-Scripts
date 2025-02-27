@@ -14,9 +14,9 @@ function Send-ScreeningAlert
 
 # Declare variables.
 [int32]$ScreeningNumber = 121;
-[string]$ScreeningRequest = (Invoke-WebRequest -Uri "https://drafthouse.com/s/mother/v2/schedule/presentation/dfw/special-event-secret-screening-$ScreeningNumber" -ErrorAction Stop).Content
-[regex]$MatchExpressionRichardson = '\"cinemaId\"\:\"0701\"\,\"sessionId\"\:\"[0-9]+\"\,\"presentationSlug\"\:\"special-event-secret-screening-[0-9]+\"\,\"legacySlug\"\:\"secret-screening-[0-9]+\"\,\"status\"\:\"ONSALE\"';
+[string]$ScreeningRequest = (Invoke-WebRequest -Uri "https://drafthouse.com/s/mother/v2/schedule/presentation/dfw/special-event-secret-screening-$ScreeningNumber" -ErrorAction Stop).Content;
 [regex]$MatchExpressionCedars = '\"cinemaId\"\:\"0702\"\,\"sessionId\"\:\"[0-9]+\"\,\"presentationSlug\"\:\"special-event-secret-screening-[0-9]+\"\,\"legacySlug\"\:\"secret-screening-[0-9]+\"\,\"status\"\:\"ONSALE\"';
+[regex]$MatchExpressionRichardson = '\"cinemaId\"\:\"0701\"\,\"sessionId\"\:\"[0-9]+\"\,\"presentationSlug\"\:\"special-event-secret-screening-[0-9]+\"\,\"legacySlug\"\:\"secret-screening-[0-9]+\"\,\"status\"\:\"ONSALE\"';
 [string]$PSEmailServer = 'mail.smtp2go.com';
 [string]$EncryptedSecureString = "76492d1116743f0423413b16050a5345MgB8AEoAYwA5AHYAQQBjAGgAQQBaAE8AUQBIAHEANAB6AEgAUgB6AEwANwA2AEEAPQA9AHwAOQA3AGEAYgBmAGMAMgBiADIANwA5AGUAMQA3AGIAZgA1AGUANwBkADQAYQBjAGEAZQAzADEAZAA4AGIAMAA2ADYAZQA0AGIAMAA0AGIANQBhAGQAMwBhADcANwA5AGYANABiAGIAZgAxADcAZgA0AGQANwA2AGMAYQA1AGIAZgA=";
 $EncryptionKey = [byte[]]@(158,78,43,25,158,127,22,96,100,217,182,220,223,244,254,46,89,141,61,8,85,60,161,39);
@@ -26,8 +26,6 @@ $MailCred = [System.Management.Automation.PSCredential]::new('metrotech', $Secur
 # Main statement. Checks Alamo's server and sends an email if tickets are live.
 switch -Regex ($ScreeningRequest) 
 {
-	{$_ -notmatch $MatchExpressionRichardson} {$null;}
-	{$_ -notmatch $MatchExpressionCedars} {Stop}
-	{$_ -imatch $MatchExpressionRichardson} {Send-ScreeningAlert;}
-	{$_ -imatch $MatchExpressionCedars} {Send-ScreeningAlert;}
+	{$_ -imatch $MatchExpressionCedars} {Send-ScreeningAlert}
+	{$_ -imatch $MatchExpressionRichardson} {Send-ScreeningAlert}
 }
