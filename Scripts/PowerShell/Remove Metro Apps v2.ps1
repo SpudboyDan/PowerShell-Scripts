@@ -1,3 +1,29 @@
+function Remove-MetroApps
+{
+	foreach ($app in $AppxBlacklist)
+	{
+		Remove-AppxProvisionedPackage -PackageName $app -AllUsers -Online
+	}
+}
+
+function Query-AppxPackages
+{
+	param (	[Parameter(Mandatory = $true, Position = 0)] 
+		[ValidatePattern('^yes$|^no$|^y$|^n$')]
+		[string]$PromptUser)
+	try
+	{
+		$PromptUser
+	}
+	
+	catch
+	{
+		throw "basic error"
+	}
+}
+
+$AppxBlacklist = [System.Collections.Generic.List[string]]::new();
+$AppxProvisionedPackages = [System.Collections.Generic.List[string]]@((Get-AppxProvisionedPackage -Online).DisplayName);
 $AppxWhitelist = [System.Collections.Generic.List[string]]@(
 	"1527c705-839a-4832-9118-54d4Bd6a0c89",
 	"c5e2524a-ea46-4f67-841f-6a9465d9d515",
@@ -83,12 +109,18 @@ $AppxWhitelist = [System.Collections.Generic.List[string]]@(
 	"windows.immersivecontrolpanel",
 	"Windows.PrintDialog");
 
-$AppxProvisionedBlacklist = [System.Collections.Generic.List[string]]::new();
-
-switch -Exact ([System.Collections.Generic.List[string]]@((Get-AppxProvisionedPackage -Online).DisplayName))
+switch -Exact ($AppxProvisionedPackages)
 {
-	{$_ -eq $AppxWhitelist[[int]($AppxWhitelist.IndexOf($_))]} {continue}
-	{$_ -ne $AppxWhitelist[[int]($AppxWhitelist.IndexOf($_))]} {$AppxProvisionedBlacklist.Add($_)}
+	{$_ -ne $AppxWhitelist[($AppxWhitelist.IndexOf($_))]} {$AppxBlacklist.Add($_)}
 }
 
-$AppxProvisionedBlacklist;
+while ((Query-AppxPackages -PromptUser (Read-Host -Prompt "`nThe following apps will be removed:`n`n$($AppxBlacklist -join "`n")`n`nAre you sure? (Y/N)")) -match '^no$|^n$')
+
+{
+	switch ((Read-Host -Prompt "`nPlease add any apps that you do not want removed:`n"))
+	{
+		{$_ -match $AppxBlacklist[$AppxBlacklist.IndexOf($_)]} {
+		$null = $AppxBlacklist.Remove($AppxBlacklist[$AppxBlacklist.IndexOf($_)])
+		continue}
+	}
+}
