@@ -26,6 +26,6 @@ $MailCred = [System.Management.Automation.PSCredential]::new("metrotech", $Secur
 # Main statement. Checks Alamo's server and sends an email if tickets are live.
 switch -Regex ($ScreeningRequest) 
 {
-	{$_ -imatch $MatchExpressionCedars} {Send-ScreeningAlert}
-	{$_ -imatch $MatchExpressionRichardson} {Send-ScreeningAlert}
+	{$_ -imatch $MatchExpressionCedars} {Send-ScreeningAlert;}
+	{$_ -imatch $MatchExpressionRichardson} {Send-ScreeningAlert;}
 }

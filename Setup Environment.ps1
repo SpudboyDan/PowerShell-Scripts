@@ -103,23 +103,23 @@ function Get-DuplicatesFastest
 
 function Play-Song
 	{
-		[Console]::Beep(466,300);
-		[Console]::Beep(310,450);
-		[Console]::Beep(620,300);
-		[Console]::Beep(522,150);
-		[Console]::Beep(466,300);
-		[Console]::Beep(310,450);
+		[Console]::Beep(466.16,300);
+		[Console]::Beep(311.13,450);
+		[Console]::Beep(622.25,300);
+		[Console]::Beep(523.25,150);
+		[Console]::Beep(466.16,300);
+		[Console]::Beep(311.13,450);
 
 		<#
-		[Console]::Beep(466,330);
-		[Console]::Beep(414,185);
-		[Console]::Beep(392,185);
-		[Console]::Beep(392,185);
-		[Console]::Beep(414,185);
-		[Console]::Beep(466,185);
-		[Console]::Beep(310,330);
-		[Console]::Beep(350,330);
-		[Console]::Beep(392,660);
+		[Console]::Beep(466.16,300);
+		[Console]::Beep(415.30,150);
+		[Console]::Beep(392,150);
+		[Console]::Beep(392,150);
+		[Console]::Beep(415.30,150);
+		[Console]::Beep(466.16,150);
+		[Console]::Beep(311.13,300);
+		[Console]::Beep(349.23,300);
+		[Console]::Beep(392,600);
 		#>
 	}
 
