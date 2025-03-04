@@ -106,7 +106,7 @@ try {
 	{
 		:NotMatchBlacklist switch ($Answer = Read-Host -Prompt "Please add any apps that you do not want removed from provisioning (case sensitive):`n") 
 		{
-			{$Answer -in ($AppxProvisionedBlacklist.DisplayName)} {$null = $AppxProvisionedBlacklist.Remove($AppxProvisionedBlacklist[[array]::IndexOf($AppxProvisionedBlacklist.DisplayName,$Answer)]);
+			{$Answer -in ($AppxProvisionedBlacklist.DisplayName)} {$null = $AppxProvisionedBlacklist.RemoveAt([array]::IndexOf($AppxProvisionedBlacklist.DisplayName,$Answer));
 			Set-ConsoleColor -Layer ForegroundColor -Color Cyan;
 			Continue;}
 
@@ -130,7 +130,7 @@ try {
 	{
 		:NotMatchBlacklist switch ($Answer = Read-Host -Prompt "Please add any apps that you do not want removed from provisioning (case sensitive):`n")
 		{
-			{$Answer -in ($AppxBlacklist.Name)} {$null = $AppxBlacklist.Remove($AppxBlacklist[[array]::IndexOf($AppxBlacklist.Name,$Answer)]);
+			{$Answer -in ($AppxBlacklist.Name)} {$null = $AppxBlacklist.RemoveAt([array]::IndexOf($AppxBlacklist.Name,$Answer));
 			Set-ConsoleColor -Layer ForegroundColor -Color Cyan;
 			Continue;}
 
