@@ -1,0 +1,23 @@
+This is an example of how you can reinstall a default\Appx\oobe app when it has been removed completely, even from provisioning.
+To download the source files, you must first use winget:
+
+	1.) Open the Windows Store App (download and install it from Microsoft's website if you do not have it installed)
+	and find the default app you're looking for. In this example, we were looking for the Phone Link app. Search for the app by name
+	and then click on the "Share" arrow directly to the right of the big blue "Get/Open" button and hit "Copy Link".
+
+	2.) Copy the URL to notepad and truncate the URL after '/detail/' and before '?' like so:
+	"https://apps.microsoft.com/detail/9NMPJ99VJBWV?hl=en-us&gl=US&ocid=pdpshare" -> 9NMPJ99VJBWV
+
+	3.) This truncated value is your app's special Microsoft Store Id. Open up command prompt (non admin) and
+	run the following commands:
+		
+		winget source update && winget download --id 9NMPJ99VJBWV --exact --source msstore --architecture x64
+
+	4.) Next, move the entire folder from your downloads and copy it under a folder of the same name.
+	i.e., create a folder named "Microsoft.YourPhone_1.25012.100.0_Desktop_X64" if the msix file is named "YourPhone.Package_1.25012.100.0_x64.msix".
+	This can vary, so just pay attention to how the same folders are named on computers with clean installations.
+
+	5.) Finally, run the following commands in PowerShell:
+		$MsixPath = "C:\Program Files\WindowsApps\Microsoft.YourPhone_1.25012.100.0_Desktop_X64\YourPhone.Package_1.25012.100.0_x64.msix";
+		$License = "C:\Program Files\WindowsApps\Microsoft.YourPhone_1.25012.100.0_Desktop_X64\9NMPJ99VJBWV_License.xml";
+		Add-AppxProvisionedPackage -Online -PackagePath $MsixPath -LicensePath $License;

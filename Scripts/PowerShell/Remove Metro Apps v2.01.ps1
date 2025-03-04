@@ -1,9 +1,25 @@
-function Query-Removal
+function Verify-Input
 {
 	param ([Parameter(Mandatory = $true, Position = 0)] 
 		[ValidatePattern('^yes$|^no$|^y$|^n$')]
 		[string]$PromptUser)
 	$PromptUser
+}
+
+function Set-ConsoleColor
+{
+	param ([Parameter(Mandatory = $true, Position = 0)]
+		[ValidateSet("BackgroundColor", "ForegroundColor")]
+		[string]$Layer,
+		[Parameter(Mandatory = $true, Position = 1)]
+		[ValidateSet("Black", "DarkBlue", "DarkGreen", "DarkCyan",
+		"DarkRed", "DarkMagenta", "DarkYellow", "Gray", "DarkGray",
+		"Blue", "Green", "Cyan", "Red", "Magenta", "Yellow", "White")]
+		[string]$Color)
+
+	[System.Console]::Clear();
+	[System.Console]::ResetColor();
+	[System.Console]::$Layer = "$Color";
 }
 
 $AppxWhitelist = [System.Collections.Generic.List[string]]@(
@@ -81,16 +97,74 @@ $AppxWhitelist = [System.Collections.Generic.List[string]]@(
 	"windows.immersivecontrolpanel",
 	"Windows.PrintDialog");
 
-$AppxBlacklist = [System.Collections.Generic.List[object]]@(Get-AppxPackage -AllUsers | Where-Object -FilterScript {$AppxWhitelist -notcontains $_.Name -and $_.IsFramework -eq $false -and $_.NonRemovable -eq $false});
-$AppxProvisionedBlacklist = [System.Collections.Generic.List[object]]@(Get-AppxProvisionedPackage -Online | Where-Object -FilterScript {$AppxWhitelist -notcontains $_.DisplayName});
-$AppxCombinedBlacklist = [System.Collections.Generic.List[string]]::new();
+$AppxBlacklist = [System.Collections.Generic.List[string]]@((Get-AppxPackage -AllUsers | Where-Object -FilterScript {$AppxWhitelist -notcontains $_.Name -and $_.IsFramework -eq $false -and $_.NonRemovable -eq $false}).PackageFullName);
+$AppxProvisionedBlacklist = [System.Collections.Generic.List[string]]@((Get-AppxProvisionedPackage -Online | Where-Object -FilterScript {$AppxWhitelist -notcontains $_.DisplayName}).PackageName);
 
-foreach ($App in ($AppxProvisionedBlacklist).DisplayName)
-{
-	$AppxCombinedBlacklist.Add($App)
+try {
+	Set-ConsoleColor -Layer ForegroundColor -Color Cyan;
+	while ((Verify-Input -PromptUser (Read-Host -Prompt "`nThe following apps will be removed from provisioning:`n`n$($AppxProvisionedBlacklist -join "`n")`n`nAre you sure? (Y/N)")) -match '^no$|^n$')
+	{
+		:NotMatchBlacklist switch ((Read-Host -Prompt "Please add any apps that you do not want removed from provisioning (case sensitive):`n"))
+		{
+			{$AppxProvisionedBlacklist -ccontains $_} {$AppxProvisionedBlacklist.Remove($_);
+			Set-ConsoleColor -Layer ForegroundColor -Color Cyan;
+			Continue;}
+
+			{$AppxProvisionedBlacklist -cnotcontains $_} {
+			Write-Host -ForegroundColor Yellow "'$_' does not match the name of any known application, or it might not be targeted for removal already. Press enter to continue...";
+			[System.Console]::ReadLine();
+			Set-ConsoleColor -Layer ForegroundColor -Color Cyan;
+			Break NotMatchBlacklist;}
+		}
+	}
 }
 
-switch ($AppxBlacklist)
+catch {
+	throw "Invalid input! Acceptable values are 'yes', 'no', 'y', and 'n' (case insensitive)";
+}
+
+try {
+	Set-ConsoleColor -Layer ForegroundColor -Color Cyan;
+	while ((Verify-Input -PromptUser (Read-Host -Prompt "`nThe following apps will be removed:`n`n$($AppxBlacklist -join "`n")`n`nAre you sure? (Y/N)")) -match '^no$|^n$')
+	{
+		:NotMatchBlacklist switch ((Read-Host -Prompt "Please add any apps that you do not want removed (case sensitive):`n"))
+		{
+			{$AppxBlacklist -ccontains $_} {$AppxBlacklist.Remove($_);
+			Set-ConsoleColor -Layer ForegroundColor -Color Cyan;
+			Continue;}
+
+			{$AppxBlacklist -cnotcontains $_} {
+			Write-Host -ForegroundColor Yellow "'$_' does not match the name of any known application, or it might not be targeted for removal already. Press enter to continue...";
+			[System.Console]::ReadLine();
+			Set-ConsoleColor -Layer ForegroundColor -Color Cyan;
+			Break NotMatchBlacklist;}
+		}
+	}
+}
+
+catch {
+	throw "Invalid input! Acceptable values are 'yes', 'no', 'y', and 'n' (case insensitive)";
+}
+
+Set-ConsoleColor -Layer ForegroundColor -Color DarkYellow;
+$Counter = 0;
+$PercentCounter = 0;
+
+foreach ($App in $AppxProvisionedBlacklist)
 {
-	{$AppxCombinedBlacklist -notcontains $_.Name} {$AppxCombinedBlacklist.Add($_.Name)}
+	$AppNameStatus = "$($App)";
+	Write-Progress -Activity "Removing Provisioned Apps $([System.Math]::Round(($PercentCounter++/$AppxProvisionedBlacklist.Count)*100))%" -Status $AppNameStatus -PercentComplete (($Counter++/$AppxProvisionedBlacklist.Count)*100);
+	Start-Sleep -Seconds 1;
+	Remove-AppxProvisionedPackage -PackageName $App -AllUsers -Online
+}
+
+$Counter = 0;
+$PercentCounter = 0;
+
+foreach ($App in $AppxBlacklist)
+{
+	$AppNameStatus = "$($App)";
+	Write-Progress -Activity "Removing Apps $([System.Math]::Round(($PercentCounter++/$AppxBlacklist.Count)*100))%" -Status $AppNameStatus -PercentComplete (($Counter++/$AppxBlacklist.Count)*100);
+	Start-Sleep -Seconds 1;
+	Remove-AppxPackage -Package $App -AllUsers
 }

@@ -10,6 +10,7 @@
 # 	Get-DuplicatesFastest
 # 	Play-Song
 # 	Print-Version
+# 	Set-ConsoleColor
 # 	Set-Keybinds
 #*================================================================================
 function Download-AdultSwim
@@ -128,6 +129,44 @@ function Print-Version
   		$HostVersion = "$($Host.Version.Major)`.$($Host.Version.Minor)";
 		$Host.UI.RawUI.WindowTitle = "PowerShell $HostVersion";
 	}
+
+function Set-ConsoleColor
+{
+	param ([Parameter(Mandatory = $true, Position = 0)]
+		[ValidateSet("Background", "Foreground", "Both")]
+		[string]$Layer,
+		[Parameter(Mandatory = $false, Position = 1)]
+		[ValidateSet("Black", "DarkBlue", "DarkGreen", "DarkCyan",
+		"DarkRed", "DarkMagenta", "DarkYellow", "Gray", "DarkGray",
+		"Blue", "Green", "Cyan", "Red", "Magenta", "Yellow", "White")]
+		[string]$Color,
+		[Parameter(Mandatory = $false, Position = 2)]
+		[ValidateSet("Black", "DarkBlue", "DarkGreen", "DarkCyan",
+		"DarkRed", "DarkMagenta", "DarkYellow", "Gray", "DarkGray",
+		"Blue", "Green", "Cyan", "Red", "Magenta", "Yellow", "White")]
+		[string]$BgColor,
+		[Parameter(Mandatory = $false, Position = 3)]
+		[ValidateSet("Black", "DarkBlue", "DarkGreen", "DarkCyan",
+		"DarkRed", "DarkMagenta", "DarkYellow", "Gray", "DarkGray",
+		"Blue", "Green", "Cyan", "Red", "Magenta", "Yellow", "White")]
+		[string]$FgColor)
+
+	switch ($Layer)
+	{
+		"Background" {[System.Console]::ResetColor();
+				[System.Console]::Clear();
+				[System.Console]::BackgroundColor = $Color;}
+
+		"Foreground" {[System.Console]::ResetColor();
+				[System.Console]::Clear();
+				[System.Console]::ForegroundColor = $Color;}
+
+		"Both" {[System.Console]::ResetColor();
+			[System.Console]::Clear();
+			[System.Console]::BackgroundColor = $BgColor;
+			[System.Console]::ForegroundColor = $FgColor;}
+	}
+}
 
 function Set-Keybinds
 	{
