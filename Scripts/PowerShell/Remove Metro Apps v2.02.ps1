@@ -97,21 +97,45 @@ $AppxWhitelist = [System.Collections.Generic.List[string]]@(
 	"windows.immersivecontrolpanel",
 	"Windows.PrintDialog");
 
-$AppxBlacklist = [System.Collections.Generic.List[object]]@((Get-AppxPackage -AllUsers).Where($_.Name -notin $AppxWhitelist -and $_.IsFramework -eq $false -and $_.NonRemovable -eq $false));
-$AppxProvisionedBlacklist = [System.Collections.Generic.List[object]]@((Get-AppxProvisionedPackage -Online).Where($_.DisplayName -notin $AppxWhitelist);
+$AppxBlacklist = [System.Collections.Generic.List[object]]@((Get-AppxPackage -AllUsers).Where({$_.Name -notin $AppxWhitelist -and $_.IsFramework -eq $false -and $_.NonRemovable -eq $false}));
+$AppxProvisionedBlacklist = [System.Collections.Generic.List[object]]@((Get-AppxProvisionedPackage -Online).Where({$_.DisplayName -notin $AppxWhitelist}));
 
 try {
 	Set-ConsoleColor -Layer ForegroundColor -Color Cyan;
-	while ((Verify-Input -PromptUser (Read-Host -Prompt "`nThe following apps will be removed from provisioning:`n`n$($AppxProvisionedBlacklist.DisplayName -join "`n")`n`nAre you sure? (Y/N)")) -match '^no$|^n$')
+	while ((Verify-Input -PromptUser (Read-Host -Prompt "`nThe following apps will be removed from provisioning:`n`n$(($AppxProvisionedBlacklist.DisplayName) -join "`n")`n`nAre you sure? (Y/N)")) -match '^no$|^n$')
 	{
-		:NotMatchBlacklist switch ($answer = (Read-Host -Prompt "Please add any apps that you do not want removed from provisioning (case sensitive):`n")) 
+		:NotMatchBlacklist switch ($Answer = Read-Host -Prompt "Please add any apps that you do not want removed from provisioning (case sensitive):`n") 
 		{
-			{$Answer -in ($AppxProvisionedBlacklist.DisplayName)} {$AppxProvisionedBlacklist.Remove($AppxProvisionedPackage[[array]::IndexOf($AppxProvisionedPackage.DisplayName,$Answer)]);
+			{$Answer -in ($AppxProvisionedBlacklist.DisplayName)} {$null = $AppxProvisionedBlacklist.Remove($AppxProvisionedBlacklist[[array]::IndexOf($AppxProvisionedBlacklist.DisplayName,$Answer)]);
 			Set-ConsoleColor -Layer ForegroundColor -Color Cyan;
 			Continue;}
 
 			{$Answer -notin ($AppxProvisionedBlacklist.DisplayName)} {
-			Write-Host -ForegroundColor Yellow "'$Answer' does not match the name of any known application, or it might not be targeted for removal already. Press enter to continue..."
+			Write-Host -ForegroundColor Yellow "'$Answer' does not match the name of any known applications, or it might not be targeted for removal already. Press enter to continue...";
+			[System.Console]::ReadLine();
+			Set-ConsoleColor -Layer ForegroundColor -Color Cyan;
+			Break NotMatchBlacklist;}
+		}
+	}
+}
+
+catch
+{
+	throw "Invalid input! Acceptable values are 'yes', 'no', 'y', or 'n'.";
+}
+
+try {
+	Set-ConsoleColor -Layer ForegroundColor -Color Cyan;
+	while ((Verify-Input -PromptUser (Read-Host -Prompt "`nThe following apps will be removed:`n`n$(($AppxBlacklist.Name) -join "`n")`n`nAre you sure? (Y/N)")) -match '^no$|^n$')
+	{
+		:NotMatchBlacklist switch ($Answer = Read-Host -Prompt "Please add any apps that you do not want removed from provisioning (case sensitive):`n")
+		{
+			{$Answer -in ($AppxBlacklist.Name)} {$null = $AppxBlacklist.Remove($AppxBlacklist[[array]::IndexOf($AppxBlacklist.Name,$Answer)]);
+			Set-ConsoleColor -Layer ForegroundColor -Color Cyan;
+			Continue;}
+
+			{$Answer -notin ($AppxBlacklist.Name)} {
+			Write-Host -ForegroundColor Yellow "'$Answer' does not match the name of any known applications, or it might not be targeted for removal already. Press enter to continue...";
 			[System.Console]::ReadLine();
 			Set-ConsoleColor -Layer ForegroundColor -Color Cyan;
 			Break NotMatchBlacklist;}
