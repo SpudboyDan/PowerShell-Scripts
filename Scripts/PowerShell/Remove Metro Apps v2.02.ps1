@@ -106,7 +106,13 @@ try {
 	{
 		:NotMatchBlacklist switch ($Answer = Read-Host -Prompt "Please add any apps that you do not want removed from provisioning (case sensitive):`n") 
 		{
-			{$Answer -in ($AppxProvisionedBlacklist.DisplayName)} {$null = $AppxProvisionedBlacklist.RemoveAt([array]::IndexOf($AppxProvisionedBlacklist.DisplayName,$Answer));
+			{$Answer -in ($AppxProvisionedBlacklist.DisplayName) -and $Answer -in ($AppxBlacklist.Name)} {
+			$null = $AppxProvisionedBlacklist.RemoveAt([array]::IndexOf($AppxProvisionedBlacklist.DisplayName, $Answer));
+			$null = $AppxBlacklist.RemoveAt([array]::IndexOf($AppxBlacklist.Name, $Answer));
+			Set-ConsoleColor -Layer ForegroundColor -Color Cyan;
+			Continue;}
+
+			{$Answer -in ($AppxProvisionedBlacklist.DisplayName)} {$null = $AppxProvisionedBlacklist.RemoveAt([array]::IndexOf($AppxProvisionedBlacklist.DisplayName, $Answer));
 			Set-ConsoleColor -Layer ForegroundColor -Color Cyan;
 			Continue;}
 
@@ -130,7 +136,13 @@ try {
 	{
 		:NotMatchBlacklist switch ($Answer = Read-Host -Prompt "Please add any apps that you do not want removed from provisioning (case sensitive):`n")
 		{
-			{$Answer -in ($AppxBlacklist.Name)} {$null = $AppxBlacklist.RemoveAt([array]::IndexOf($AppxBlacklist.Name,$Answer));
+			{$Answer -in ($AppxBlacklist.Name) -and $Answer -in ($AppxProvisionedBlacklist.DisplayName)} {
+			$null = $AppxBlacklist.RemoveAt([array]::IndexOf($AppxBlacklist.Name, $Answer));
+			$null = $AppxProvisionedBlacklist.RemoveAt([array]::IndexOf($AppxProvisionedBlacklist.DisplayName, $Answer));
+			Set-ConsoleColor -Layer ForegroundColor -Color Cyan;
+			Continue;}
+
+			{$Answer -in ($AppxBlacklist.Name)} {$null = $AppxBlacklist.RemoveAt([array]::IndexOf($AppxBlacklist.Name, $Answer));
 			Set-ConsoleColor -Layer ForegroundColor -Color Cyan;
 			Continue;}
 
@@ -158,7 +170,10 @@ foreach ($App in $AppxProvisionedBlacklist)
 	$PaddingLength = [System.Math]::Round((118 - ($RemovalActivity.Length + 3 + $App.DisplayName.Length))/2, [System.MidpointRounding]::ToZero);
 	$AppNameStatus = "$($App.DisplayName.PadLeft($PaddingLength + $App.DisplayName.Length + 1, 0x0020))";
 	Write-Progress -Activity $RemovalActivity -Status $AppNameStatus -PercentComplete (($Counter++/$AppxProvisionedBlacklist.Count)*100);
-	Start-Sleep -Seconds 0.5;
+	Start-Sleep -Seconds 2;
+	<#
+	Remove-AppxProvisionedPackage -PackageName $App.DisplayName -AllUsers -Online;
+	#>
 }
 
 $Counter = 0;
@@ -170,5 +185,8 @@ foreach ($App in $AppxBlacklist)
 	$PaddingLength = [System.Math]::Round((118 - ($RemovalActivity.Length + 3 + $App.Name.Length))/2, [System.MidpointRounding]::ToZero);
 	$AppNameStatus = "$($App.Name.PadLeft($PaddingLength + $App.Name.Length + 1, 0x0020))";
 	Write-Progress -Activity $RemovalActivity -Status $AppNameStatus -PercentComplete (($Counter++/$AppxBlacklist.Count)*100);
-	Start-Sleep -Seconds 0.5;
+	Start-Sleep -Seconds 2;
+	<#
+	Remove-AppxPackage -Package $App.Name -AllUsers
+	#>
 }
