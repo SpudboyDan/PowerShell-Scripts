@@ -170,9 +170,9 @@ foreach ($App in $AppxProvisionedBlacklist)
 	$PaddingLength = [System.Math]::Round((118 - ($RemovalActivity.Length + 3 + $App.DisplayName.Length))/2, [System.MidpointRounding]::ToZero);
 	$AppNameStatus = "$($App.DisplayName.PadLeft($PaddingLength + $App.DisplayName.Length + 1, 0x0020))";
 	Write-Progress -Activity $RemovalActivity -Status $AppNameStatus -PercentComplete (($Counter++/$AppxProvisionedBlacklist.Count)*100);
-	Start-Sleep -Seconds 2;
+	Start-Sleep -Seconds 1;
 	<#
-	Remove-AppxProvisionedPackage -PackageName $App.DisplayName -AllUsers -Online;
+	$null = Remove-AppxProvisionedPackage -PackageName $App.PackageName -AllUsers -Online;
 	#>
 }
 
@@ -185,8 +185,8 @@ foreach ($App in $AppxBlacklist)
 	$PaddingLength = [System.Math]::Round((118 - ($RemovalActivity.Length + 3 + $App.Name.Length))/2, [System.MidpointRounding]::ToZero);
 	$AppNameStatus = "$($App.Name.PadLeft($PaddingLength + $App.Name.Length + 1, 0x0020))";
 	Write-Progress -Activity $RemovalActivity -Status $AppNameStatus -PercentComplete (($Counter++/$AppxBlacklist.Count)*100);
-	Start-Sleep -Seconds 2;
+	Start-Sleep -Seconds 1;
 	<#
-	Remove-AppxPackage -Package $App.Name -AllUsers
+	$null = Remove-AppxPackage -Package $App.PackageFullName -AllUsers;
 	#>
 }
