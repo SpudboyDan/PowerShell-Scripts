@@ -147,3 +147,28 @@ catch
 {
 	throw "Invalid input! Acceptable values are 'yes', 'no', 'y', or 'n'.";
 }
+
+Set-ConsoleColor -Layer ForegroundColor -Color DarkYellow;
+$Counter = 0;
+$PercentCounter = 0;
+
+foreach ($App in $AppxProvisionedBlacklist)
+{
+	$RemovalActivity = "Removing Provisioned Apps $([System.Math]::Round(($PercentCounter++/$AppxProvisionedBlacklist.Count)*100))%";
+	$PaddingLength = [System.Math]::Round((118 - ($RemovalActivity.Length + 3 + $App.DisplayName.Length))/2, [System.MidpointRounding]::ToZero);
+	$AppNameStatus = "$($App.DisplayName.PadLeft($PaddingLength + $App.DisplayName.Length + 1, 0x0020))";
+	Write-Progress -Activity $RemovalActivity -Status $AppNameStatus -PercentComplete (($Counter++/$AppxProvisionedBlacklist.Count)*100);
+	Start-Sleep -Seconds 0.5;
+}
+
+$Counter = 0;
+$PercentCounter = 0;
+
+foreach ($App in $AppxBlacklist)
+{
+	$RemovalActivity = "Removing Apps $([System.Math]::Round(($PercentCounter++/$AppxBlacklist.Count)*100))%";
+	$PaddingLength = [System.Math]::Round((118 - ($RemovalActivity.Length + 3 + $App.Name.Length))/2, [System.MidpointRounding]::ToZero);
+	$AppNameStatus = "$($App.Name.PadLeft($PaddingLength + $App.Name.Length + 1, 0x0020))";
+	Write-Progress -Activity $RemovalActivity -Status $AppNameStatus -PercentComplete (($Counter++/$AppxBlacklist.Count)*100);
+	Start-Sleep -Seconds 0.5;
+}

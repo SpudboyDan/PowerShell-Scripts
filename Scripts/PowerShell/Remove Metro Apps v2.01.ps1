@@ -155,7 +155,9 @@ foreach ($App in $AppxProvisionedBlacklist)
 	$AppNameStatus = "$($App)";
 	Write-Progress -Activity "Removing Provisioned Apps $([System.Math]::Round(($PercentCounter++/$AppxProvisionedBlacklist.Count)*100))%" -Status $AppNameStatus -PercentComplete (($Counter++/$AppxProvisionedBlacklist.Count)*100);
 	Start-Sleep -Seconds 1;
+	<#
 	Remove-AppxProvisionedPackage -PackageName $App -AllUsers -Online
+	#>
 }
 
 $Counter = 0;
@@ -166,5 +168,7 @@ foreach ($App in $AppxBlacklist)
 	$AppNameStatus = "$($App)";
 	Write-Progress -Activity "Removing Apps $([System.Math]::Round(($PercentCounter++/$AppxBlacklist.Count)*100))%" -Status $AppNameStatus -PercentComplete (($Counter++/$AppxBlacklist.Count)*100);
 	Start-Sleep -Seconds 1;
+	<#
 	Remove-AppxPackage -Package $App -AllUsers
+	#>
 }
