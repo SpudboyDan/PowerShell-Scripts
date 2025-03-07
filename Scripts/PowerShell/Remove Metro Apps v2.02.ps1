@@ -22,6 +22,8 @@ function Set-ConsoleColor
 	[System.Console]::$Layer = "$Color";
 }
 
+$Host.UI.RawUI.WindowTitle = $MyInvocation.MyCommand.Name;
+
 if ($PSStyle -ne $null)
 {
 	$PSStyle.Progress.View = 'Classic';
@@ -107,7 +109,7 @@ $AppxProvisionedBlacklist = [System.Collections.Generic.List[object]]@((Get-Appx
 
 try {
 	Set-ConsoleColor -Layer ForegroundColor -Color Cyan;
-	while ((Verify-Input -PromptUser (Read-Host -Prompt "The following apps will be removed from provisioning:`n`n$(($AppxProvisionedBlacklist.DisplayName) -join "`n")`n`nAre you sure? (Y/N)")) -match '^no$|^n$')
+	while ((Verify-Input -PromptUser (Read-Host -Prompt "The following apps will be removed from provisioning:`n`n$(($AppxProvisionedBlacklist.DisplayName) -join "`n")`n`nAre you sure?`n[Y] Yes [N] No")) -match '^no$|^n$')
 	{
 		:NotMatchBlacklist switch ($Answer = Read-Host -Prompt "Please add any apps that you do not want removed from provisioning (case sensitive):`n") 
 		{
@@ -137,7 +139,7 @@ catch
 
 try {
 	Set-ConsoleColor -Layer ForegroundColor -Color Cyan;
-	while ((Verify-Input -PromptUser (Read-Host -Prompt "The following apps will be removed:`n`n$(($AppxBlacklist.Name) -join "`n")`n`nAre you sure? (Y/N)")) -match '^no$|^n$')
+	while ((Verify-Input -PromptUser (Read-Host -Prompt "The following apps will be removed:`n`n$(($AppxBlacklist.Name) -join "`n")`n`nAre you sure?`n[Y] Yes [N] No")) -match '^no$|^n$')
 	{
 		:NotMatchBlacklist switch ($Answer = Read-Host -Prompt "Please add any apps that you do not want removed (case sensitive):`n")
 		{
@@ -175,7 +177,7 @@ foreach ($App in $AppxProvisionedBlacklist)
 	$RemovalStatus = "Removing Provisioned Apps $([System.Math]::Round(($PercentCounter++/$AppxProvisionedBlacklist.Count)*100))%";
 	$AppNameActivity = "$($App.DisplayName.PadLeft($PaddingLength + $App.DisplayName.Length, 0x0020))";
 	Write-Progress -Activity $AppNameActivity -Status $RemovalStatus -PercentComplete (($Counter++/$AppxProvisionedBlacklist.Count)*100);
-	Start-Sleep -Seconds 1.5;
+	Start-Sleep -Seconds 1;
 	<#
 	$null = Remove-AppxProvisionedPackage -PackageName $App.PackageName -AllUsers -Online;
 	#>
@@ -190,7 +192,7 @@ foreach ($App in $AppxBlacklist)
 	$RemovalStatus = "Removing Apps $([System.Math]::Round(($PercentCounter++/$AppxBlacklist.Count)*100))%";
 	$AppNameActivity = "$($App.Name.PadLeft($PaddingLength + $App.Name.Length, 0x0020))";
 	Write-Progress -Activity $AppNameActivity -Status $RemovalStatus -PercentComplete (($Counter++/$AppxBlacklist.Count)*100);
-	Start-Sleep -Seconds 1.5;
+	Start-Sleep -Seconds 1;
 	<#
 	$null = Remove-AppxPackage -Package $App.PackageFullName -AllUsers;
 	#>

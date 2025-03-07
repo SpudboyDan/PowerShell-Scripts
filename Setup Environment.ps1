@@ -61,14 +61,36 @@ function Get-DuplicatesFast
 			$true	{Get-ChildItem -File -Recurse | Group-Object -Property Length | `
 				Where-Object {$_.Count -gt 1} | foreach {$_.Group} | Get-FileHash | `
 				Group-Object -Property Hash | Where-Object {$_.Count -gt 1} | `
-				foreach {$_.Group} | Select-Object}
+				foreach {$_.Group}}
 
 			$false	{Get-ChildItem -File | Group-Object -Property Length | `
 				Where-Object {$_.Count -gt 1} | foreach {$_.Group} | Get-FileHash | `
 				Group-Object -Property Hash | Where-Object {$_.Count -gt 1} | `
-				foreach {$_.Group} | Select-Object}
+				foreach {$_.Group}}
 		}
 	}
+
+function Get-Duplicatesv2
+{
+	param ([switch]$Recurse)
+	
+	switch ($Recurse)
+	{
+		$true {$Properties = @{RecurseSubdirectories = [bool]1; IgnoreInaccessible = [bool]1;}
+		$EnumerationOptions = New-Object -TypeName System.IO.EnumerationOptions -Property $Properties;
+		$Directory = [System.Collections.Generic.List[System.IO.FileInfo]]@([System.IO.DirectoryInfo]::new("$PWD").EnumerateFiles('*.*', $EnumerationOptions));
+		[Func[System.IO.FileInfo,int64]]$InnerDelegate = {$args[0].Length}
+		[Func[System.IO.FileInfo,string]]$OuterDelegate = {$args[0].FullName}
+		[System.Linq.Enumerable]::GroupBy($Directory, $InnerDelegate, $OuterDelegate);}
+
+		$false {$Properties = @{RecurseSubdirectories = [bool]0; IgnoreInaccessible = [bool]1;}
+		$EnumerationOptions = New-Object -TypeName System.IO.EnumerationOptions -Property $Properties;
+		$Directory = [System.Collections.Generic.List[System.IO.FileInfo]]@([System.IO.DirectoryInfo]::new("$PWD").EnumerateFiles('*.*', $EnumerationOptions));
+		[Func[System.IO.FileInfo,int64]]$InnerDelegate = {$args[0].Length}
+		[Func[System.IO.FileInfo,string]]$OuterDelegate = {$args[0].FullName}
+		[System.Linq.Enumerable]::GroupBy($Directory, $InnerDelegate, $OuterDelegate);}
+	}
+}
 
 function Get-DuplicatesFaster 
 	{
@@ -95,10 +117,10 @@ function Get-DuplicatesFastest
 		switch ($Recurse)
 		{
 			$true	{Get-ChildItem -File -Recurse | Group-Object -Property Length | `
-				Where-Object {$_.Count -gt 1} | foreach {$_.Group} | Select-Object}
+				Where-Object {$_.Count -gt 1} | foreach {$_.Group}}
 
 			$false	{Get-ChildItem -File | Group-Object -Property Length | `
-				Where-Object {$_.Count -gt 1} | foreach {$_.Group} | Select-Object}
+				Where-Object {$_.Count -gt 1} | foreach {$_.Group}}
 		}
 	}
 
