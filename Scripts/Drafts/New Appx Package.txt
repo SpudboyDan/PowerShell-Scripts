@@ -1,4 +1,0 @@
-MicrosoftCorporationII.WinAppRuntime.Main.1.4
-MicrosoftCorporationII.WinAppRuntime.Singleton
-Microsoft.WinAppRuntime.DDLM.4000.1082.2259.0-x6
-Microsoft.WinAppRuntime.DDLM.4000.1082.2259.0-x8

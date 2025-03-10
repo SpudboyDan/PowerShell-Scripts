@@ -1,4 +1,4 @@
-Function Pop-Msg
+function Pop-Msg
 {
     <#
     DESCRIPTION:
@@ -16,10 +16,10 @@ Function Pop-Msg
 }
 
 function Pop-Msg {
-	 param([string]$msg ="message",
-	 [string]$ttl = "Title",
-	 [int]$type = 64) 
-	 $popwin = New-Object -ComObject WScript.Shell
-	 $null = $popwin.Popup($msg,0,$ttl,$type)
-	 Remove-Variable popwin
+	 param([string]$DisplayMessage ="MESSAGE",
+	 	[string]$DisplayTitle = "TITLE",
+	 	[int]$Type = 64) 
+	 $PopWin = New-Object -ComObject WScript.Shell
+	 $null = $PopWin.Popup($DisplayMessage,0,$DisplayTitle,$Type)
+	 Remove-Variable PopWin
 }

@@ -1,8 +1,0 @@
-Media
-GuinpinSoft.MakeMKV
-HandBrake.HandBrake
-HandBrake.HandBrake.CLI
-Jellyfin.JellyfinMediaPlayer
-Jellyfin.Server
-OBSProject.OBSStudio
-VideoLAN.VLC

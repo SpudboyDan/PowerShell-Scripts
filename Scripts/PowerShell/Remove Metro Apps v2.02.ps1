@@ -3,6 +3,7 @@ function Verify-Input
 	param ([Parameter(Mandatory = $true, Position = 0)] 
 		[ValidatePattern('^yes$|^no$|^y$|^n$')]
 		[string]$PromptUser)
+
 	$PromptUser
 }
 
@@ -17,12 +18,11 @@ function Set-ConsoleColor
 		"Blue", "Green", "Cyan", "Red", "Magenta", "Yellow", "White")]
 		[string]$Color)
 
-	[System.Console]::Clear();
-	[System.Console]::ResetColor();
 	[System.Console]::$Layer = "$Color";
 }
 
 $Host.UI.RawUI.WindowTitle = $MyInvocation.MyCommand.Name;
+$Error.Clear();
 
 if ($PSStyle -ne $null)
 {
@@ -108,6 +108,7 @@ $AppxBlacklist = [System.Collections.Generic.List[object]]@((Get-AppxPackage -Al
 $AppxProvisionedBlacklist = [System.Collections.Generic.List[object]]@((Get-AppxProvisionedPackage -Online).Where({$_.DisplayName -notin $AppxWhitelist}));
 
 try {
+	[System.Console]::Clear();
 	Set-ConsoleColor -Layer ForegroundColor -Color Cyan;
 	while ((Verify-Input -PromptUser (Read-Host -Prompt "The following apps will be removed from provisioning:`n`n$(($AppxProvisionedBlacklist.DisplayName) -join "`n")`n`nAre you sure?`n[Y] Yes [N] No")) -match '^no$|^n$')
 	{
@@ -116,17 +117,17 @@ try {
 			{$Answer -in ($AppxProvisionedBlacklist.DisplayName) -and $Answer -in ($AppxBlacklist.Name)} {
 			$null = $AppxProvisionedBlacklist.RemoveAt([array]::IndexOf($AppxProvisionedBlacklist.DisplayName, $Answer));
 			$null = $AppxBlacklist.RemoveAt([array]::IndexOf($AppxBlacklist.Name, $Answer));
-			Set-ConsoleColor -Layer ForegroundColor -Color Cyan;
+			[System.Console]::Clear();
 			Continue;}
 
 			{$Answer -in ($AppxProvisionedBlacklist.DisplayName)} {$null = $AppxProvisionedBlacklist.RemoveAt([array]::IndexOf($AppxProvisionedBlacklist.DisplayName, $Answer));
-			Set-ConsoleColor -Layer ForegroundColor -Color Cyan;
+			[System.Console]::Clear();
 			Continue;}
 
 			{$Answer -notin ($AppxProvisionedBlacklist.DisplayName)} {
 			Write-Host -ForegroundColor Yellow "'$Answer' does not match the name of any known applications, or it might not be targeted for removal already. Press enter to continue...";
 			[System.Console]::ReadLine();
-			Set-ConsoleColor -Layer ForegroundColor -Color Cyan;
+			[System.Console]::Clear();
 			Break NotMatchBlacklist;}
 		}
 	}
@@ -134,10 +135,11 @@ try {
 
 catch
 {
-	throw "Invalid input! Acceptable values are 'yes', 'no', 'y', or 'n'.";
+	throw $Error;
 }
 
 try {
+	[System.Console]::Clear();
 	Set-ConsoleColor -Layer ForegroundColor -Color Cyan;
 	while ((Verify-Input -PromptUser (Read-Host -Prompt "The following apps will be removed:`n`n$(($AppxBlacklist.Name) -join "`n")`n`nAre you sure?`n[Y] Yes [N] No")) -match '^no$|^n$')
 	{
@@ -146,17 +148,17 @@ try {
 			{$Answer -in ($AppxBlacklist.Name) -and $Answer -in ($AppxProvisionedBlacklist.DisplayName)} {
 			$null = $AppxBlacklist.RemoveAt([array]::IndexOf($AppxBlacklist.Name, $Answer));
 			$null = $AppxProvisionedBlacklist.RemoveAt([array]::IndexOf($AppxProvisionedBlacklist.DisplayName, $Answer));
-			Set-ConsoleColor -Layer ForegroundColor -Color Cyan;
+			[System.Console]::Clear();
 			Continue;}
 
 			{$Answer -in ($AppxBlacklist.Name)} {$null = $AppxBlacklist.RemoveAt([array]::IndexOf($AppxBlacklist.Name, $Answer));
-			Set-ConsoleColor -Layer ForegroundColor -Color Cyan;
+			[System.Console]::Clear();
 			Continue;}
 
 			{$Answer -notin ($AppxBlacklist.Name)} {
 			Write-Host -ForegroundColor Yellow "'$Answer' does not match the name of any known applications, or it might not be targeted for removal already. Press enter to continue...";
 			[System.Console]::ReadLine();
-			Set-ConsoleColor -Layer ForegroundColor -Color Cyan;
+			[System.Console]::Clear();
 			Break NotMatchBlacklist;}
 		}
 	}
@@ -164,10 +166,10 @@ try {
 
 catch
 {
-	throw "Invalid input! Acceptable values are 'yes', 'no', 'y', or 'n'.";
+	throw $Error;
 }
 
-Set-ConsoleColor -Layer ForegroundColor -Color DarkYellow;
+[System.Console]::Clear();
 $Counter = 0;
 $PercentCounter = 0;
 

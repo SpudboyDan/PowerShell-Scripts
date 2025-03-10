@@ -1,4 +1,4 @@
-This is an example of how you can reinstall a default\Appx\oobe app when it has been removed completely, even from provisioning.
+This is an example of how you can reinstall a Microsoft Store/Appx app when it has been removed completely, even from provisioning.
 To download the source files, you must first use winget:
 
 	1.) Open the Windows Store App (download and install it from Microsoft's website if you do not have it installed)

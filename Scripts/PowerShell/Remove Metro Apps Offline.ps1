@@ -24,6 +24,13 @@ function Set-ConsoleColor
 
 $InputPath = (Read-Host -Prompt "Please enter the path of the offline Windows image you wish to target");
 
+$Host.UI.RawUI.WindowTitle = $MyInvocation.MyCommand.Name;
+
+switch ($PSStyle -ne $null)
+{
+	{$true} {$PSStyle.Progress.View = 'Classic';}
+}
+
 $AppxWhitelist = [System.Collections.Generic.List[string]]@(
 	"1527c705-839a-4832-9118-54d4Bd6a0c89",
 	"c5e2524a-ea46-4f67-841f-6a9465d9d515",
@@ -103,7 +110,7 @@ $AppxProvisionedBlacklist = [System.Collections.Generic.List[object]]@((Get-Appx
 
 try {
 	Set-ConsoleColor -Layer ForegroundColor -Color Cyan;
-	while ((Verify-Input -PromptUser (Read-Host -Prompt "`nThe following apps will be removed from provisioning:`n`n$(($AppxProvisionedBlacklist.DisplayName) -join "`n")`n`nAre you sure? (Y/N)")) -match '^no$|^n$')
+	while ((Verify-Input -PromptUser (Read-Host -Prompt "The following apps will be removed from provisioning:`n`n$(($AppxProvisionedBlacklist.DisplayName) -join "`n")`n`nAre you sure?`n[Y] Yes [N] No")) -match '^no$|^n$')
 	{
 		:NotMatchBlacklist switch ($Answer = Read-Host -Prompt "Please add any apps that you do not want removed from provisioning (case sensitive):`n") 
 		{
@@ -131,10 +138,10 @@ $PercentCounter = 0;
 
 foreach ($App in $AppxProvisionedBlacklist)
 {
-	$RemovalActivity = "Removing Provisioned Apps $([System.Math]::Round(($PercentCounter++/$AppxProvisionedBlacklist.Count)*100))%";
-	$PaddingLength = [System.Math]::Round((118 - ($RemovalActivity.Length + 3 + $App.DisplayName.Length))/2, [System.MidpointRounding]::ToZero);
-	$AppNameStatus = "$($App.DisplayName.PadLeft($PaddingLength + $App.DisplayName.Length, 0x0020))";
-	Write-Progress -Activity $RemovalActivity -Status $AppNameStatus -PercentComplete (($Counter++/$AppxProvisionedBlacklist.Count)*100);
-	$null = Remove-AppxProvisionedPackage -PackageName $App.PackageName -Path $InputPath;
+	$PaddingLength = [System.Math]::Round(([System.Console]::BufferWidth - $App.DisplayName.Length)/2, [System.MidpointRounding]::ToZero);
+	$RemovalStatus = "Removing Provisioned Apps $([System.Math]::Round(($PercentCounter++/$AppxProvisionedBlacklist.Count)*100))%";
+	$AppNameActivity = "$($App.DisplayName.PadLeft($PaddingLength + $App.DisplayName.Length, 0x0020))";
+	Write-Progress -Activity $AppNameActivity -Status $RemovalStatus -PercentComplete (($Counter++/$AppxProvisionedBlacklist.Count)*100);
 	Start-Sleep -Seconds 1;
+	$null = Remove-AppxProvisionedPackage -PackageName $App.PackageName -Path $InputPath;
 }
