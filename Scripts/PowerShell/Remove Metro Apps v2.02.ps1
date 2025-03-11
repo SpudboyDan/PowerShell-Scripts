@@ -110,17 +110,18 @@ $AppxProvisionedBlacklist = [System.Collections.Generic.List[object]]@((Get-Appx
 try {
 	[System.Console]::Clear();
 	Set-ConsoleColor -Layer ForegroundColor -Color Cyan;
-	while ((Verify-Input -PromptUser (Read-Host -Prompt "The following apps will be removed from provisioning:`n`n$(($AppxProvisionedBlacklist.DisplayName) -join "`n")`n`nAre you sure?`n[Y] Yes [N] No")) -match '^no$|^n$')
+	while ((Verify-Input -PromptUser (Read-Host -Prompt "The following provisioned apps will be removed:`n`n$(($AppxProvisionedBlacklist.DisplayName) -join "`n")`n`nAre you sure?`n[Y] Yes [N] No")) -match '^no$|^n$')
 	{
-		:NotMatchBlacklist switch ($Answer = Read-Host -Prompt "Please add any apps that you do not want removed from provisioning (case sensitive):`n") 
+		:NotMatchBlacklist switch ($Answer = Read-Host -Prompt "Please add any provisioned apps you do not want removed:`n") 
 		{
 			{$Answer -in ($AppxProvisionedBlacklist.DisplayName) -and $Answer -in ($AppxBlacklist.Name)} {
-			$null = $AppxProvisionedBlacklist.RemoveAt([array]::IndexOf($AppxProvisionedBlacklist.DisplayName, $Answer));
-			$null = $AppxBlacklist.RemoveAt([array]::IndexOf($AppxBlacklist.Name, $Answer));
+			$null = $AppxProvisionedBlacklist.RemoveAt([array]::IndexOf($AppxProvisionedBlacklist.DisplayName, [string]($AppxProvisionedBlacklist.DisplayName -match $Answer)));
+			$null = $AppxBlacklist.RemoveAt([array]::IndexOf($AppxBlacklist.Name, [string]($AppxBlacklist.Name -match $Answer)));
 			[System.Console]::Clear();
 			Continue;}
 
-			{$Answer -in ($AppxProvisionedBlacklist.DisplayName)} {$null = $AppxProvisionedBlacklist.RemoveAt([array]::IndexOf($AppxProvisionedBlacklist.DisplayName, $Answer));
+			{$Answer -in ($AppxProvisionedBlacklist.DisplayName)} {
+			$null = $AppxProvisionedBlacklist.RemoveAt([array]::IndexOf($AppxProvisionedBlacklist.DisplayName, [string]($AppxProvisionedBlacklist.DisplayName -match $Answer)));
 			[System.Console]::Clear();
 			Continue;}
 
@@ -140,18 +141,18 @@ catch
 
 try {
 	[System.Console]::Clear();
-	Set-ConsoleColor -Layer ForegroundColor -Color Cyan;
 	while ((Verify-Input -PromptUser (Read-Host -Prompt "The following apps will be removed:`n`n$(($AppxBlacklist.Name) -join "`n")`n`nAre you sure?`n[Y] Yes [N] No")) -match '^no$|^n$')
 	{
-		:NotMatchBlacklist switch ($Answer = Read-Host -Prompt "Please add any apps that you do not want removed (case sensitive):`n")
+		:NotMatchBlacklist switch ($Answer = Read-Host -Prompt "Please add any apps you do not want removed:`n")
 		{
 			{$Answer -in ($AppxBlacklist.Name) -and $Answer -in ($AppxProvisionedBlacklist.DisplayName)} {
-			$null = $AppxBlacklist.RemoveAt([array]::IndexOf($AppxBlacklist.Name, $Answer));
-			$null = $AppxProvisionedBlacklist.RemoveAt([array]::IndexOf($AppxProvisionedBlacklist.DisplayName, $Answer));
+			$null = $AppxBlacklist.RemoveAt([array]::IndexOf($AppxBlacklist.Name, [string]($AppxBlacklist.Name -match $Answer)));
+			$null = $AppxProvisionedBlacklist.RemoveAt([array]::IndexOf($AppxProvisionedBlacklist.DisplayName, [string]($AppxProvisionedBlacklist.DisplayName -match $Answer)));
 			[System.Console]::Clear();
 			Continue;}
 
-			{$Answer -in ($AppxBlacklist.Name)} {$null = $AppxBlacklist.RemoveAt([array]::IndexOf($AppxBlacklist.Name, $Answer));
+			{$Answer -in ($AppxBlacklist.Name)} {
+			$null = $AppxBlacklist.RemoveAt([array]::IndexOf($AppxBlacklist.Name, [string]($AppxBlacklist.Name -match $Answer)));
 			[System.Console]::Clear();
 			Continue;}
 
