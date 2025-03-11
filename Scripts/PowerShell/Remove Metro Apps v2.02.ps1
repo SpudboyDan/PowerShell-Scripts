@@ -48,6 +48,7 @@ $AppxWhitelist = [System.Collections.Generic.List[string]]@(
 	"Microsoft.ECApp",
 	"Microsoft.HEIFImageExtension",
 	"Microsoft.HEVCVideoExtension",
+	"Microsoft.Ink.Handwriting.Main.en-US.1.0.1",
 	"Microsoft.LockApp",
 	"Microsoft.MicrosoftEdge.Stable",
 	"Microsoft.MicrosoftEdgeDevToolsClient",
