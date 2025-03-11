@@ -1,14 +1,14 @@
 using namespace System;
 using namespace System.Collections.Generic;
 
-function Verify-Input
-{
-	param ([Parameter(Mandatory = $true, Position = 0)] 
-		[ValidatePattern('^yes$|^no$|^y$|^n$')]
-		[string]$PromptUser)
-
-	$PromptUser
-}
+#*================================================================================
+# Copyright © 2025, Metro-Tech. All rights reserved.
+# Remove Metro Apps v2.02
+# ================================================================================
+# Functions
+# 	Set-ConsoleColor
+# 	Verify-Input
+#*================================================================================
 
 function Set-ConsoleColor
 {
@@ -22,6 +22,15 @@ function Set-ConsoleColor
 		[string]$Color)
 
 	[Console]::$Layer = "$Color";
+}
+
+function Verify-Input
+{
+	param ([Parameter(Mandatory = $true, Position = 0)] 
+		[ValidatePattern('^yes$|^no$|^y$|^n$')]
+		[string]$PromptUser)
+
+	$PromptUser
 }
 
 $Host.UI.RawUI.WindowTitle = $MyInvocation.MyCommand.Name;
