@@ -58,7 +58,7 @@ $AppxWhitelist = [List[string]]@(
 	"Microsoft.MicrosoftStickyNotes",
 	"Microsoft.MPEG2VideoExtension",
 	"Microsoft.OfficePushNotificationUtility",
-	"Microsoft.OneDriveSync"
+	"Microsoft.OneDriveSync",
 	"Microsoft.Paint",
 	"Microsoft.RawImageExtension",
 	"Microsoft.ScreenSketch",
@@ -145,7 +145,7 @@ catch
 
 try {
 	[Console]::Clear();
-	while ((Verify-Input -PromptUser (Read-Host -Prompt "The following apps will be removed:`n`n$(([Linq.Enumerable]::Order([IEnumerable[object]]$AppxBlacklist.Name)) -join "`n")`n`nAre you sure?`n[Y] Yes [N] No")) -match '^no$|^n$')
+	while ((Verify-Input -PromptUser (Read-Host -Prompt "The following apps will be removed:`n`n$(([SortedSet[string]]$AppxBlacklist.Name) -join "`n")`n`nAre you sure?`n[Y] Yes [N] No")) -match '^no$|^n$')
 	{
 		:NotMatchBlacklist switch ($Answer = Read-Host -Prompt "Please add any apps you do not want removed:`n")
 		{
