@@ -142,7 +142,7 @@ catch
 
 try {
 	[System.Console]::Clear();
-	while ((Verify-Input -PromptUser (Read-Host -Prompt "The following apps will be removed:`n`n$(($AppxBlacklist.Name) -join "`n")`n`nAre you sure?`n[Y] Yes [N] No")) -match '^no$|^n$')
+	while ((Verify-Input -PromptUser (Read-Host -Prompt "The following apps will be removed:`n`n$(([System.Linq.Enumerable]::Order([System.Collections.Generic.IEnumerable[object]]$AppxBlacklist.Name)) -join "`n")`n`nAre you sure?`n[Y] Yes [N] No")) -match '^no$|^n$')
 	{
 		:NotMatchBlacklist switch ($Answer = Read-Host -Prompt "Please add any apps you do not want removed:`n")
 		{
