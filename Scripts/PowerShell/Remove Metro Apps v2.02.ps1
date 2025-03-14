@@ -1,16 +1,10 @@
-using namespace System.Collections;
-using namespace System.Collections.Generic;
-using namespace System.Management.Automation;
-
 #*================================================================================
 # Copyright © 2025, Metro-Tech. All rights reserved.
 # Remove Metro Apps v2.02
 # ================================================================================
 # Functions
 # 	Prompt-Host
-# 	Set-ConsoleColor
 #*================================================================================
-
 function private:Prompt-Host
 {
 	param([Parameter(Mandatory = $true, Position = 0)]
@@ -28,25 +22,11 @@ function private:Prompt-Host
 		[Parameter(Mandatory = $false, Position = 6)]
 		[int]$DefaultChoice = (-1))
 
-		$private:Choices = [ObjectModel.Collection[Host.ChoiceDescription]]@(
-				[Host.ChoiceDescription]::new([string]"&$LabelA", [string]"$HelpA")
-				[Host.ChoiceDescription]::new([string]"&$LabelB", [string]"$HelpB"));
+		$private:Choices = [System.Collections.ObjectModel.Collection[System.Management.Automation.Host.ChoiceDescription]]@(
+				[System.Management.Automation.Host.ChoiceDescription]::new([string]"&$LabelA", [string]"$HelpA")
+				[System.Management.Automation.Host.ChoiceDescription]::new([string]"&$LabelB", [string]"$HelpB"));
 
 	$Host.UI.PromptForChoice($Caption, $Message, $Choices, $DefaultChoice);
-}
-
-function private:Set-ConsoleColor
-{
-	param ([Parameter(Mandatory = $true, Position = 0)]
-		[ValidateSet("BackgroundColor", "ForegroundColor")]
-		[string]$Layer,
-		[Parameter(Mandatory = $true, Position = 1)]
-		[ValidateSet("Black", "DarkBlue", "DarkGreen", "DarkCyan",
-		"DarkRed", "DarkMagenta", "DarkYellow", "Gray", "DarkGray",
-		"Blue", "Green", "Cyan", "Red", "Magenta", "Yellow", "White")]
-		[string]$Color)
-
-	[Console]::$Layer = "$Color";
 }
 
 $Host.UI.RawUI.WindowTitle = $MyInvocation.MyCommand.Name;
@@ -56,7 +36,7 @@ if ($PSStyle -ne $null)
 	$PSStyle.Progress.View = 'Classic';
 }
 
-$AppxWhitelist = [List[string]]@(
+$AppxWhitelist = [System.Collections.Generic.List[string]]@(
 	"1527c705-839a-4832-9118-54d4Bd6a0c89",
 	"c5e2524a-ea46-4f67-841f-6a9465d9d515",
 	"E2A4F912-2574-4A75-9BB0-0D023378592B",
@@ -132,31 +112,38 @@ $AppxWhitelist = [List[string]]@(
 	"windows.immersivecontrolpanel",
 	"Windows.PrintDialog");
 
-$AppxBlacklist = [List[object]]@((Get-AppxPackage -AllUsers).Where({$_.Name -notin $AppxWhitelist -and $_.IsFramework -eq $false -and $_.NonRemovable -eq $false}));
-$AppxProvisionedBlacklist = [List[object]]@((Get-AppxProvisionedPackage -Online).Where({$_.DisplayName -notin $AppxWhitelist}));
+$AppxBlacklist = [System.Collections.Generic.List[object]]@((Get-AppxPackage -AllUsers).Where({$_.Name -notin $AppxWhitelist -and $_.IsFramework -eq $false -and $_.NonRemovable -eq $false}));
+$AppxProvisionedBlacklist = [System.Collections.Generic.List[object]]@((Get-AppxProvisionedPackage -Online).Where({$_.DisplayName -notin $AppxWhitelist}));
+$PromptHostParams = @{
+	Message = "`nAre you sure?";
+	LabelA = "Yes";
+	HelpA = "Remove apps";
+	LabelB = "No";
+	HelpB = "Do not remove apps";}
 
 try {
-	[Console]::Clear();
-	Set-ConsoleColor -Layer ForegroundColor -Color Cyan;
-	while ((Prompt-Host -Caption "The following provisioned apps will be removed:`n`n$(([string[]]$AppxProvisionedBlacklist.DisplayName) -join "`n")" -Message "`nAre you sure?" -LabelA "Yes" -HelpA "Remove provisioned apps" -LabelB "No" -HelpB "Do not remove provisioned apps" -DefaultChoice 1) -eq 1)
+	[System.Console]::Clear();
+	[System.Console]::ForegroundColor = 'Cyan';
+	while ((Prompt-Host -Caption "The following provisioned apps will be removed:`n`n$(([string[]]$AppxProvisionedBlacklist.DisplayName) -join "`n")" @PromptHostParams) -eq 1)
+	
 	{
-		:NotMatchBlacklist switch ($Answer = Read-Host -Prompt "Please add any provisioned apps you do not want removed:`n") 
+		:NotMatchBlacklist switch ($Answer = Read-Host -Prompt "`nPlease add any provisioned apps you do not want removed") 
 		{
 			{$Answer -in ($AppxProvisionedBlacklist.DisplayName) -and $Answer -in ($AppxBlacklist.Name)} {
 			$null = $AppxProvisionedBlacklist.RemoveAt([array]::IndexOf($AppxProvisionedBlacklist.DisplayName, ($AppxProvisionedBlacklist.DisplayName -match $Answer)[0]));
 			$null = $AppxBlacklist.RemoveAt([array]::IndexOf($AppxBlacklist.Name, ($AppxBlacklist.Name -match $Answer)[0]));
-			[Console]::Clear();
+			[System.Console]::Clear();
 			continue;}
 
 			{$Answer -in ($AppxProvisionedBlacklist.DisplayName)} {
 			$null = $AppxProvisionedBlacklist.RemoveAt([array]::IndexOf($AppxProvisionedBlacklist.DisplayName, ($AppxProvisionedBlacklist.DisplayName -match $Answer)[0]));
-			[Console]::Clear();
+			[System.Console]::Clear();
 			continue;}
 
 			{$Answer -notin ($AppxProvisionedBlacklist.DisplayName)} {
-			Write-Host -ForegroundColor Yellow "'$Answer' does not match the name of any known applications, or it might not be targeted for removal already. Press enter to continue...";
-			[Console]::ReadLine();
-			[Console]::Clear();
+			Write-Host -ForegroundColor Yellow "'$Answer' does not match the name of any apps. It might not be targeted for removal already. Press enter to continue...";
+			[System.Console]::ReadLine();
+			[System.Console]::Clear();
 			break NotMatchBlacklist;}
 		}
 	}
@@ -167,26 +154,27 @@ catch {
 }
 
 try {
-	[Console]::Clear();
-	while ((Prompt-Host -Caption "The following apps will be removed:`n`n$(([SortedSet[string]]$AppxBlacklist.Name) -join "`n")" -Message "`nAre you sure?" -LabelA "Yes" -HelpA "Remove apps" -LabelB "No" -HelpB "Do not remove apps" -DefaultChoice 1) -eq 1)
+	[System.Console]::Clear();
+	[System.Console]::ForegroundColor = 'Cyan';
+	while ((Prompt-Host -Caption "The following apps will be removed:`n`n$(([System.Collections.Generic.SortedSet[string]]$AppxBlacklist.Name) -join "`n")" @PromptHostParams) -eq 1)
 	{
-		:NotMatchBlacklist switch ($Answer = Read-Host -Prompt "Please add any apps you do not want removed:`n")
+		:NotMatchBlacklist switch ($Answer = Read-Host -Prompt "`nPlease add any apps you do not want removed")
 		{
 			{$Answer -in ($AppxBlacklist.Name) -and $Answer -in ($AppxProvisionedBlacklist.DisplayName)} {
 			$null = $AppxBlacklist.RemoveAt([array]::IndexOf($AppxBlacklist.Name, ($AppxBlacklist.Name -match $Answer)[0]));
 			$null = $AppxProvisionedBlacklist.RemoveAt([array]::IndexOf($AppxProvisionedBlacklist.DisplayName, ($AppxProvisionedBlacklist.DisplayName -match $Answer)[0]));
-			[Console]::Clear();
+			[System.Console]::Clear();
 			continue;}
 
 			{$Answer -in ($AppxBlacklist.Name)} {
 			$null = $AppxBlacklist.RemoveAt([array]::IndexOf($AppxBlacklist.Name, ($AppxBlacklist.Name -match $Answer)[0]));
-			[Console]::Clear();
+			[System.Console]::Clear();
 			continue;}
 
 			{$Answer -notin ($AppxBlacklist.Name)} {
-			Write-Host -ForegroundColor Yellow "'$Answer' does not match the name of any known applications, or it might not be targeted for removal already. Press enter to continue...";
-			[Console]::ReadLine();
-			[Console]::Clear();
+			Write-Host -ForegroundColor Yellow "'$Answer' does not match the name of any apps. It might not be targeted for removal already. Press enter to continue...";
+			[System.Console]::ReadLine();
+			[System.Console]::Clear();
 			break NotMatchBlacklist;}
 		}
 	}
@@ -196,14 +184,14 @@ catch {
 	throw $Error;
 }
 
-[Console]::Clear();
+[System.Console]::Clear();
 $Counter = 0;
 $PercentCounter = 0;
 
 foreach ($App in $AppxProvisionedBlacklist)
 {
-	$PaddingLength = [Math]::Round(([Console]::BufferWidth - $App.DisplayName.Length)/2, [MidpointRounding]::ToZero);
-	$RemovalStatus = "Removing Provisioned Apps $([Math]::Round(($PercentCounter++/$AppxProvisionedBlacklist.Count)*100))%";
+	$PaddingLength = [System.Math]::Round(([System.Console]::BufferWidth - $App.DisplayName.Length)/2, [System.MidpointRounding]::ToZero);
+	$RemovalStatus = "Removing Provisioned Apps $([System.Math]::Round(($PercentCounter++/$AppxProvisionedBlacklist.Count)*100))%";
 	$AppNameActivity = "$($App.DisplayName.PadLeft($PaddingLength + $App.DisplayName.Length, 0x0020))";
 	Write-Progress -Activity $AppNameActivity -Status $RemovalStatus -PercentComplete (($Counter++/$AppxProvisionedBlacklist.Count)*100);
 	Start-Sleep -Seconds 1;
@@ -217,8 +205,8 @@ $PercentCounter = 0;
 
 foreach ($App in $AppxBlacklist)
 {
-	$PaddingLength = [Math]::Round(([Console]::BufferWidth - $App.Name.Length)/2, [MidpointRounding]::ToZero);
-	$RemovalStatus = "Removing Apps $([Math]::Round(($PercentCounter++/$AppxBlacklist.Count)*100))%";
+	$PaddingLength = [System.Math]::Round(([System.Console]::BufferWidth - $App.Name.Length)/2, [System.MidpointRounding]::ToZero);
+	$RemovalStatus = "Removing Apps $([System.Math]::Round(($PercentCounter++/$AppxBlacklist.Count)*100))%";
 	$AppNameActivity = "$($App.Name.PadLeft($PaddingLength + $App.Name.Length, 0x0020))";
 	Write-Progress -Activity $AppNameActivity -Status $RemovalStatus -PercentComplete (($Counter++/$AppxBlacklist.Count)*100);
 	Start-Sleep -Seconds 1;

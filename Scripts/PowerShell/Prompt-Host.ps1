@@ -1,6 +1,3 @@
-using namespace System.Collections;
-using namespace System.Management.Automation;
-
 function private:Prompt-Host
 {
 	param([Parameter(Mandatory = $true, Position = 0)]
@@ -18,9 +15,9 @@ function private:Prompt-Host
 		[Parameter(Mandatory = $false, Position = 6)]
 		[int]$DefaultChoice = (-1))
 
-		$private:Choices = [ObjectModel.Collection[Host.ChoiceDescription]]@(
-				[Host.ChoiceDescription]::new([string]"&$LabelA", [string]"$HelpA")
-				[Host.ChoiceDescription]::new([string]"&$LabelB", [string]"$HelpB"));
+		$private:Choices = [System.Collections.ObjectModel.Collection[System.Management.Automation.Host.ChoiceDescription]]@(
+				[System.Management.Automation.Host.ChoiceDescription]::new([string]"&$LabelA", [string]"$HelpA")
+				[System.Management.Automation.Host.ChoiceDescription]::new([string]"&$LabelB", [string]"$HelpB"));
 
 	$Host.UI.PromptForChoice($Caption, $Message, $Choices, $DefaultChoice);
 }
