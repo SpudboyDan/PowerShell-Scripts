@@ -1,6 +1,6 @@
 $secureString = (Read-Host -AsSecureString "Please enter a password for drive W");
 $secureCredential = New-Object System.Management.Automation.PSCredential('willb',$secureString);
-New-PSDrive -Name "W" -PSProvider FileSystem -Root "\\192.168.77.253\work\data" -Scope Global -Persist -Credential $secureCredential;
+New-PSDrive -Name "W" -PSProvider FileSystem -Root "\\192.168.77.253\work\data" -Credential $secureCredential;
 New-Item -ItemType Directory -Path "C:\Driver", "C:\Util.w", "C:\Temp";
 
 Copy-Item -Path "W:\01 Main\Util.w\wincmd.ini" -Destination "C:\Windows" -Force -Recurse;

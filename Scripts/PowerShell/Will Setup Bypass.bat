@@ -1,1 +1,1 @@
-powershell -NoExit -ExecutionPolicy Bypass -File "%~dp0\Will Setup.ps1"
+START /MAX /NORMAL PowerShell -NoLogo -NoExit -Mta -NoProfile -ExecutionPolicy Bypass -Command "& .\'Will Setup.ps1'"
