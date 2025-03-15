@@ -13,8 +13,7 @@ $SystemUsers = [System.Collections.Generic.List[string]]@(
 	"ASPNET",
 	"DefaultAccount",
 	"Guest",
-	"HomeGroupUser",
-	"QBDataServiceUser",
+	"HomeGroupUser$",
 	"WDAGUtilityAccount",
 	"~0000AEAdmin");
 
