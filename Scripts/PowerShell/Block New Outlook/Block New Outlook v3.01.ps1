@@ -45,7 +45,13 @@ function Disable-NewOutlook
 			Write-Host "Unable to set working location for $User`'s Registry.";
 			continue
 		}
-	
+
+		if ((Test-Path -Path "$HKeyUsersPath") -eq $false -and (Test-Path -Path "$HKeyUsersPath\General") -eq $false)
+		{
+			Write-Host -ForegroundColor Yellow "No changes were made to the Registry hive for $User. Office 16.0 is not installed, and/or no Outlook profile was found.";
+			continue
+		}
+
 		if ((Test-Path -Path "$HKeyUsersPath\General") -eq $true)
 		{
 			# Null is to help with performance but also to suppress "noisy" output.
@@ -57,17 +63,12 @@ function Disable-NewOutlook
 			continue
 		}
 	
-		elseif ((Test-Path -Path "$HKeyUsersPath") -eq $true)
+		if ((Test-Path -Path "$HKeyUsersPath") -eq $true)
 		{
 			$null = New-Item -Path "$HKeyUsersPath\General";
 			$null = New-ItemProperty -Path "$HKeyUsersPath\General" -Name "NewOutlookAutoMigrationRetryIntervals" -PropertyType DWord -Value 0 -Force;
 			$null = New-ItemProperty -Path "$HKeyUsersPath\General" -Name "DoNewOutlookAutoMigration" -PropertyType DWord -Value 0 -Force;
 			Write-Host "Registry updates completed successfully for $User.";
-		}
-	
-		else
-		{
-			Write-Host "No changes were made to the Registry hive for $User. Office 16.0 is not installed, and/or no Outlook profile was found.";
 		}
 	}
 }
@@ -77,13 +78,12 @@ function Disable-NewOutlookOffline
 {
 	foreach ($User in $LocalUsers)
 	{
-		# Once again $null is used to suppress noisy output and increase performance.
-		# Output must be redirected this way (vs. how we prviously casted to $null)
-		# due to how PowerShell handles output streams for Win32 applications.
-		reg load HKU\$User "C:\Users\$User\NTUSER.DAT" *>$null;
-
 		try
 		{
+			# Once again $null is used to suppress noisy output and increase performance.
+			# Output must be redirected this way (vs. how we prviously casted to $null)
+			# due to how PowerShell handles output streams for Win32 applications.
+			reg load HKU\$User "C:\Users\$User\NTUSER.DAT" *>$null;
 			Set-Location -Path Registry::HKU\$User -ErrorAction Stop;
 		}
 		
@@ -97,6 +97,15 @@ function Disable-NewOutlookOffline
 			continue
 		}
 		
+		if ((Test-Path -Path "$HKeyUsersPath") -eq $false -and (Test-Path -Path "$HKeyUsersPath\General") -eq $false)
+		{
+			Write-Host -ForegroundColor Yellow "No changes were made to the Registry hive (offline) for $User. Office 16.0 is not installed, and/or no Outlook profile was found.";
+			Set-Location -Path C:;
+			[System.GC]::Collect();
+			reg unload HKU\$User *>$null;
+			continue
+		}
+	
 		if ((Test-Path -Path "$HKeyUsersPath\General") -eq $True)
 		{
 			$null = New-ItemProperty -Path "$HKeyUsersPath\General" -Name "NewOutlookAutoMigrationRetryIntervals" -PropertyType DWord -Value 0 -Force;
@@ -107,21 +116,13 @@ function Disable-NewOutlookOffline
 			reg unload HKU\$User *>$null;
 			continue
 		}
-	
-		elseif ((Test-Path -Path "$HKeyUsersPath") -eq $True)
+
+		if ((Test-Path -Path "$HKeyUsersPath") -eq $True)
 		{
 			$null = New-Item -Path "$HKeyUsersPath\General";
 			$null = New-ItemProperty -Path "$HKeyUsersPath\General" -Name "NewOutlookAutoMigrationRetryIntervals" -PropertyType DWord -Value 0 -Force;
 			$null = New-ItemProperty -Path "$HKeyUsersPath\General" -Name "DoNewOutlookAutoMigration" -PropertyType DWord -Value 0 -Force;
 			Write-Host "Registry updates completed successfully (offline) for $User.";
-			Set-Location -Path C:;
-			[System.GC]::Collect();
-			reg unload HKU\$User *>$null;
-		}
-		
-		else 
-		{
-			Write-Host "No changes were made to the Registry hive (offline) for $User. Office 16.0 is not installed, and/or no Outlook profile was found.";
 			Set-Location -Path C:;
 			[System.GC]::Collect();
 			reg unload HKU\$User *>$null;
