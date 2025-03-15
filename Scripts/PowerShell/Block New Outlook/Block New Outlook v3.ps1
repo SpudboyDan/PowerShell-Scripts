@@ -28,7 +28,7 @@ if ($LocalUsers.Count -eq 0)
 }
 
 # Declare functions.
-function Disable-NewOutlook
+function private:Disable-NewOutlook
 {
 	foreach ($User in $LocalUsers)
 	{
@@ -73,17 +73,17 @@ function Disable-NewOutlook
 }
 
 # Does the same thing as Disable-NewOutlook, but only for logged out users by loading their NTUSER.DAT file.
-function Disable-NewOutlookOffline
+function private:Disable-NewOutlookOffline
 {
 	foreach ($User in $LocalUsers)
 	{
 		# Once again $null is used to suppress noisy output and increase performance.
-		# Output must be redirected this way (vs. how we prviously casted to $null)
+		# Output must be redirected this way (vs. how we previously casted to $null)
 		# due to how PowerShell handles output streams for Win32 applications.
-		reg load HKU\$User "C:\Users\$User\NTUSER.DAT" *>$null;
 
 		try
 		{
+			reg load HKU\$User "C:\Users\$User\NTUSER.DAT" *>$null;
 			Set-Location -Path Registry::HKU\$User -ErrorAction Stop;
 		}
 		
@@ -129,7 +129,7 @@ function Disable-NewOutlookOffline
 	}
 }
 
-# Main section of this script. If statement determines the correct function to call.
+# Main section of this script. Determines the correct function to call based on if a user is currently logged in.
 if ((Get-Process -Name explorer -ErrorAction Ignore).ProcessName -eq "explorer")
 {
 	Disable-NewOutlook
