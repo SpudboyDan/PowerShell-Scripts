@@ -6,8 +6,8 @@
 #	Download-AdultSwim
 # 	Get-Duplicates
 # 	Get-DuplicatesFast
-# 	Get-DuplicatesFaster
-# 	Get-DuplicatesFastest
+# 	Get-DuplicatesV2
+# 	Invoke-AteraApi
 # 	Play-Song
 # 	Print-Version
 # 	Set-ConsoleColor
@@ -70,7 +70,7 @@ function Get-DuplicatesFast
 		}
 	}
 
-function Get-Duplicatesv2
+function Get-DuplicatesV2
 {
 	param ([switch]$Recurse)
 	
@@ -81,48 +81,77 @@ function Get-Duplicatesv2
 		$Directory = [System.Collections.Generic.List[System.IO.FileInfo]]@([System.IO.DirectoryInfo]::new("$PWD").EnumerateFiles('*.*', $EnumerationOptions));
 		[Func[System.IO.FileInfo,int64]]$InnerDelegate = {$args[0].Length}
 		[Func[System.IO.FileInfo,string]]$OuterDelegate = {$args[0].FullName}
-		[System.Linq.Enumerable]::GroupBy($Directory, $InnerDelegate, $OuterDelegate);}
-
+		[System.Linq.Enumerable]::GroupBy($Directory, $InnerDelegate, $OuterDelegate);
+		[System.Linq.Enumerable]::Where([System.Linq.Enumerable]::GroupBy($Directory, $InnerDelegate, $OuterDelegate), [System.Func[object, bool]] {$args[0].Count -gt 1});}
+		
 		$false {$Properties = @{RecurseSubdirectories = [bool]0; IgnoreInaccessible = [bool]1;}
 		$EnumerationOptions = New-Object -TypeName System.IO.EnumerationOptions -Property $Properties;
 		$Directory = [System.Collections.Generic.List[System.IO.FileInfo]]@([System.IO.DirectoryInfo]::new("$PWD").EnumerateFiles('*.*', $EnumerationOptions));
 		[Func[System.IO.FileInfo,int64]]$InnerDelegate = {$args[0].Length}
 		[Func[System.IO.FileInfo,string]]$OuterDelegate = {$args[0].FullName}
-		[System.Linq.Enumerable]::GroupBy($Directory, $InnerDelegate, $OuterDelegate);}
+		[System.Linq.Enumerable]::GroupBy($Directory, $InnerDelegate, $OuterDelegate);
+		[System.Linq.Enumerable]::Where([System.Linq.Enumerable]::GroupBy($Directory, $InnerDelegate, $OuterDelegate), [System.Func[object, bool]] {$args[0].Count -gt 1});}
 	}
 }
 
-function Get-DuplicatesFaster 
-	{
-		param ([switch]$Recurse)
+function Invoke-AteraApi
+{
+	param ([parameter(Mandatory = $true, Position = 0)]
+		[string]$Key,
+		[parameter(Mandatory = $true, Position = 1)]
+		[ValidateSet("Agents", "Customers", "CustomerAgents", "CustomerById", "MachineByName")]
+		[string]$QueryOf,
+		[parameter(Mandatory = $false, Position = 2)]
+		[long]$CustomerId,
+		[parameter(Mandatory = $false, Position = 3)]
+		[string]$MachineName,
+		[parameter(Mandatory = $false, Position = 4)]
+		[int]$PageNumber = 1,
+		[parameter(Mandatory = $false, Position = 5)]
+		[int]$ItemAmount = 20)
 
-		switch ($Recurse)
-		{
-			$true	{Get-ChildItem -File -Recurse | Group-Object -Property Length | `
-				Where-Object {$_.Count -gt 1} | foreach {$_.Group} | `
-				Select-Object -Property Directory,BaseName | `
-				Format-Table -GroupBy Directory -RepeatHeader | Out-Host -Paging}
+switch ($QueryOf) {
+	"Agents" 	{Invoke-RestMethod -Uri "https://app.atera.com/api/v3/agents?page=$PageNumber&itemsInPage=$ItemAmount" -Headers @{
+				"method"="GET"
+				"scheme"="https"
+  				"accept"="application/json;charset=utf-8,*/*"
+  				"accept-encoding"="gzip, deflate, br, zstd"
+  				"accept-language"="en-US,en;q=0.9"
+  				"x-api-key"="$Key"}}
 
-			$false	{Get-ChildItem -File | Group-Object -Property Length | `
-				Where-Object {$_.Count -gt 1} | foreach {$_.Group} | `
-				Select-Object -Property Directory,BaseName | `
-				Format-Table -GroupBy Directory -RepeatHeader | Out-Host -Paging}
-		}
-	}
+	"Customers"	{Invoke-RestMethod -Uri "https://app.atera.com/api/v3/customers?page=$PageNumber&itemsInPage=$ItemAmount" -Headers @{
+				"method"="GET"
+				"scheme"="https"
+  				"accept"="application/json;charset=utf-8,*/*"
+  				"accept-encoding"="gzip, deflate, br, zstd"
+  				"accept-language"="en-US,en;q=0.9"
+  				"x-api-key"="$Key"}}
 
-function Get-DuplicatesFastest 
-	{
-		param ([switch]$Recurse)
+	"CustomerAgents"	{Invoke-RestMethod -Uri "https://app.atera.com/api/v3/agents/customer/$CustomerId`?page=$PageNumber&itemsInPage=$ItemAmount" -Headers @{
+					"method"="GET"
+					"scheme"="https"
+  					"accept"="application/json;charset=utf-8,*/*"
+  					"accept-encoding"="gzip, deflate, br, zstd"
+  					"accept-language"="en-US,en;q=0.9"
+  					"x-api-key"="$Key"}}
 
-		switch ($Recurse)
-		{
-			$true	{Get-ChildItem -File -Recurse | Group-Object -Property Length | `
-				Where-Object {$_.Count -gt 1} | foreach {$_.Group}}
+	"CustomerById"	{Invoke-RestMethod -Uri "https://app.atera.com/api/v3/customers/$CustomerId" -Headers @{
+				"method"="GET"
+				"scheme"="https"
+  				"accept"="application/json;charset=utf-8,*/*"
+  				"accept-encoding"="gzip, deflate, br, zstd"
+  				"accept-language"="en-US,en;q=0.9"
+  				"x-api-key"="$Key"}}
 
-			$false	{Get-ChildItem -File | Group-Object -Property Length | `
-				Where-Object {$_.Count -gt 1} | foreach {$_.Group}}
-		}
-	}
+	"MachineByName"	{Invoke-RestMethod -Uri "https://app.atera.com/api/v3/agents/machine/$MachineName`?page=$PageNumber&itemsInPage=$ItemAmount" -Headers @{
+				"method"="GET"
+				"scheme"="https"
+  				"accept"="application/json;charset=utf-8,*/*"
+  				"accept-encoding"="gzip, deflate, br, zstd"
+  				"accept-language"="en-US,en;q=0.9"
+  				"x-api-key"="$Key"}}
+		  }
+}
 
 function Play-Song
 	{
@@ -155,39 +184,15 @@ function Print-Version
 function Set-ConsoleColor
 {
 	param ([Parameter(Mandatory = $true, Position = 0)]
-		[ValidateSet("Background", "Foreground", "Both")]
+		[ValidateSet("BackgroundColor", "ForegroundColor")]
 		[string]$Layer,
-		[Parameter(Mandatory = $false, Position = 1)]
+		[Parameter(Mandatory = $true, Position = 1)]
 		[ValidateSet("Black", "DarkBlue", "DarkGreen", "DarkCyan",
 		"DarkRed", "DarkMagenta", "DarkYellow", "Gray", "DarkGray",
 		"Blue", "Green", "Cyan", "Red", "Magenta", "Yellow", "White")]
-		[string]$Color,
-		[Parameter(Mandatory = $false, Position = 2)]
-		[ValidateSet("Black", "DarkBlue", "DarkGreen", "DarkCyan",
-		"DarkRed", "DarkMagenta", "DarkYellow", "Gray", "DarkGray",
-		"Blue", "Green", "Cyan", "Red", "Magenta", "Yellow", "White")]
-		[string]$BgColor,
-		[Parameter(Mandatory = $false, Position = 3)]
-		[ValidateSet("Black", "DarkBlue", "DarkGreen", "DarkCyan",
-		"DarkRed", "DarkMagenta", "DarkYellow", "Gray", "DarkGray",
-		"Blue", "Green", "Cyan", "Red", "Magenta", "Yellow", "White")]
-		[string]$FgColor)
+		[string]$Color)
 
-	switch ($Layer)
-	{
-		"Background" {[System.Console]::ResetColor();
-				[System.Console]::Clear();
-				[System.Console]::BackgroundColor = $Color;}
-
-		"Foreground" {[System.Console]::ResetColor();
-				[System.Console]::Clear();
-				[System.Console]::ForegroundColor = $Color;}
-
-		"Both" {[System.Console]::ResetColor();
-			[System.Console]::Clear();
-			[System.Console]::BackgroundColor = $BgColor;
-			[System.Console]::ForegroundColor = $FgColor;}
-	}
+	[System.Console]::$Layer = "$Color";
 }
 
 function Set-Keybinds
