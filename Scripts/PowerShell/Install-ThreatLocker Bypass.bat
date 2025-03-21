@@ -1,1 +1,1 @@
-START /MAX /NORMAL PowerShell -NoLogo -NoExit -Mta -NoProfile -ExecutionPolicy Bypass -Command "& .\'Install-ThreatLocker.ps1'"
+START /MAX /NORMAL PowerShell -NoLogo -NoExit -Mta -NoProfile -ExecutionPolicy Bypass -Command "& '%~dp0Install-ThreatLocker.ps1'"

@@ -119,11 +119,10 @@ function Get-DuplicatesV2
 		$EnumerationOptions = New-Object -TypeName System.IO.EnumerationOptions -Property $Properties;
 		$Directory = [System.Collections.Generic.List[System.IO.FileInfo]]@([System.IO.DirectoryInfo]::new("$PWD").EnumerateFiles('*.*', $EnumerationOptions));
 		$ByteArray = [System.Collections.Generic.List[byte]]::new();
-		[Func[System.IO.FileInfo,int64]]$InnerDelegate = {$args[0].Length}
-		[Func[System.IO.FileInfo,string]]$OuterDelegate = {$args[0].FullName}
-		[System.Linq.Enumerable]::GroupBy($Directory, $InnerDelegate, $OuterDelegate);
-		[System.Linq.Enumerable]::Where([System.Linq.Enumerable]::GroupBy($Directory, $InnerDelegate, $OuterDelegate), [System.Func[object, bool]] {$args[0].Count -gt 1});
-		$ByteArray.Add([System.BitConverter]::ToString(([System.Security.Cryptography.SHA256]::Create().ComputeHash([System.IO.File]::OpenRead("File.ext")))).Replace("-", "").ToLower())}
+		[Func[System.IO.FileInfo,int64]]$global:InnerDelegate = {$args[0].Length};
+		[Func[System.IO.FileInfo,string]]$global:OuterDelegate = {$args[0].FullName};
+		$global:Groups = [Linq.Enumerable]::Where([Linq.Enumerable]::GroupBy($Directory, $InnerDelegate, $OuterDelegate), [Func[[Linq.IGrouping`2[Int64, String]], bool]] {$args[0].Count -gt 1});
+		$ByteArray.Add([System.BitConverter]::ToString(([System.Security.Cryptography.SHA256]::Create().ComputeHash([System.IO.File]::OpenRead("File.ext")))).Replace("-", "").ToLower());}
 		
 		$false {$Properties = @{RecurseSubdirectories = [bool]0; IgnoreInaccessible = [bool]1;}
 		$EnumerationOptions = New-Object -TypeName System.IO.EnumerationOptions -Property $Properties;
