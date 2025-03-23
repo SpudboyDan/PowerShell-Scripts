@@ -1,5 +1,5 @@
 #*================================================================================
-# Copyright © 2025, spudboydan. All rights reserved.
+# Copyright © 2025, Metro-Tech. All rights reserved.
 # Block New Outlook v3
 # ================================================================================
 # Functions
@@ -52,8 +52,8 @@ function private:Disable-NewOutlook
 			# especially when performance matters.
 			$null = New-ItemProperty -Path "$HKeyUsersPath\General" -Name "NewOutlookAutoMigrationRetryIntervals" -PropertyType DWord -Value 0 -Force;
 			$null = New-ItemProperty -Path "$HKeyUsersPath\General" -Name "DoNewOutlookAutoMigration" -PropertyType DWord -Value 0 -Force;
+			$null = New-ItemProperty -Path "Software\Microsoft\Office\16.0\Outlook\Preferences" -Name "NewOutlookMigrationUserSetting" -PropertyType DWord -Value 0 -Force;
 			Write-Host "Registry updates completed successfully for $User.";
-			continue
 		}
 	
 		elseif ((Test-Path -Path "$HKeyUsersPath") -eq $true)
@@ -61,6 +61,7 @@ function private:Disable-NewOutlook
 			$null = New-Item -Path "$HKeyUsersPath\General";
 			$null = New-ItemProperty -Path "$HKeyUsersPath\General" -Name "NewOutlookAutoMigrationRetryIntervals" -PropertyType DWord -Value 0 -Force;
 			$null = New-ItemProperty -Path "$HKeyUsersPath\General" -Name "DoNewOutlookAutoMigration" -PropertyType DWord -Value 0 -Force;
+			$null = New-ItemProperty -Path "Software\Microsoft\Office\16.0\Outlook\Preferences" -Name "NewOutlookMigrationUserSetting" -PropertyType DWord -Value 0 -Force;
 			Write-Host "Registry updates completed successfully for $User.";
 		}
 	
@@ -100,11 +101,11 @@ function private:Disable-NewOutlookOffline
 		{
 			$null = New-ItemProperty -Path "$HKeyUsersPath\General" -Name "NewOutlookAutoMigrationRetryIntervals" -PropertyType DWord -Value 0 -Force;
 			$null = New-ItemProperty -Path "$HKeyUsersPath\General" -Name "DoNewOutlookAutoMigration" -PropertyType DWord -Value 0 -Force;
+			$null = New-ItemProperty -Path "Software\Microsoft\Office\16.0\Outlook\Preferences" -Name "NewOutlookMigrationUserSetting" -PropertyType DWord -Value 0 -Force;
 			Write-Host "Registry updates completed successfully (offline) for $User.";
 			Set-Location -Path C:;
 			[System.GC]::Collect();
 			reg unload HKU\$User *>$null;
-			continue
 		}
 	
 		elseif ((Test-Path -Path "$HKeyUsersPath") -eq $True)
@@ -112,6 +113,7 @@ function private:Disable-NewOutlookOffline
 			$null = New-Item -Path "$HKeyUsersPath\General";
 			$null = New-ItemProperty -Path "$HKeyUsersPath\General" -Name "NewOutlookAutoMigrationRetryIntervals" -PropertyType DWord -Value 0 -Force;
 			$null = New-ItemProperty -Path "$HKeyUsersPath\General" -Name "DoNewOutlookAutoMigration" -PropertyType DWord -Value 0 -Force;
+			$null = New-ItemProperty -Path "Software\Microsoft\Office\16.0\Outlook\Preferences" -Name "NewOutlookMigrationUserSetting" -PropertyType DWord -Value 0 -Force;
 			Write-Host "Registry updates completed successfully (offline) for $User.";
 			Set-Location -Path C:;
 			[System.GC]::Collect();

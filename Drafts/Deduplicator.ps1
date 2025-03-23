@@ -1,0 +1,1 @@
+Get-ChildItem -Path "V:\Pictures\LaneWallpaper" -Recurse | Get-Filehash -Algorithm SHA1 | Group-Object -Property Hash | Where-Object {$_.Count -gt 1} | % {$_.Group | Select-Object -Skip 1 } | Select-Object -ExpandProperty Path | Remove-Item;
