@@ -115,14 +115,18 @@ function Get-DuplicatesV2
 	
 	switch ($Recurse)
 	{
-		$true {$Properties = @{RecurseSubdirectories = [bool]1; IgnoreInaccessible = [bool]1;}
-		$EnumerationOptions = New-Object -TypeName System.IO.EnumerationOptions -Property $Properties;
-		$Directory = [System.Collections.Generic.List[System.IO.FileInfo]]@([System.IO.DirectoryInfo]::new("$PWD").EnumerateFiles('*.*', $EnumerationOptions));
-		$ByteArray = [System.Collections.Generic.List[byte]]::new();
-		[Func[System.IO.FileInfo,int64]]$global:InnerDelegate = {$args[0].Length};
-		[Func[System.IO.FileInfo,string]]$global:OuterDelegate = {$args[0].FullName};
-		$global:Groups = [Linq.Enumerable]::Where([Linq.Enumerable]::GroupBy($Directory, $InnerDelegate, $OuterDelegate), [Func[[Linq.IGrouping`2[Int64, String]], bool]] {$args[0].Count -gt 1});
-		$ByteArray.Add([System.BitConverter]::ToString(([System.Security.Cryptography.SHA256]::Create().ComputeHash([System.IO.File]::OpenRead("File.ext")))).Replace("-", "").ToLower());}
+		$true {$global:Properties = @{RecurseSubdirectories = [bool]1; IgnoreInaccessible = [bool]1;}
+		$global:EnumerationOptions = New-Object -TypeName IO.EnumerationOptions -Property $Properties;
+		$global:Directory = [Collections.Generic.List[IO.FileInfo]]@([IO.DirectoryInfo]::new("$PWD").EnumerateFiles('*.*', $EnumerationOptions));
+		$global:HashArray = [Collections.Generic.List[string]]::new();
+		[Func[IO.FileInfo,int64]]$global:InnerDelegate = {$args[0].Length};
+		[Func[IO.FileInfo,string]]$global:OuterDelegate = {$args[0].FullName};
+		$global:Groups = [Linq.Enumerable]::Where([Linq.Enumerable]::GroupBy($Directory, $InnerDelegate, $OuterDelegate), [Func[[Linq.IGrouping`2[Int64, String]], bool]] {$args[0].Count -gt 1})};
+
+		<#
+		$Groups.ToArray();
+		$HashArray.Add([System.BitConverter]::ToString(([System.Security.Cryptography.SHA256]::Create().ComputeHash([System.IO.File]::OpenRead("File.ext")))).Replace("-", "").ToLower());}
+		#>
 		
 		$false {$Properties = @{RecurseSubdirectories = [bool]0; IgnoreInaccessible = [bool]1;}
 		$EnumerationOptions = New-Object -TypeName System.IO.EnumerationOptions -Property $Properties;
