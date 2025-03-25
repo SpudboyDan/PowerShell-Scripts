@@ -118,23 +118,24 @@ function Get-DuplicatesV2
 		$true {$global:Properties = @{RecurseSubdirectories = [bool]1; IgnoreInaccessible = [bool]1;}
 		$global:EnumerationOptions = New-Object -TypeName IO.EnumerationOptions -Property $Properties;
 		$global:Directory = [Collections.Generic.List[IO.FileInfo]]@([IO.DirectoryInfo]::new("$PWD").EnumerateFiles('*.*', $EnumerationOptions));
-		[Func[IO.FileInfo,int64]]$global:InnerDelegate = {$args[0].Length};
-		[Func[IO.FileInfo,string]]$global:OuterDelegate = {$args[0].FullName};
-		$global:Groups = [Linq.Enumerable]::Where([Linq.Enumerable]::GroupBy($Directory, $InnerDelegate, $OuterDelegate), [Func[[Linq.IGrouping`2[Int64, String]], bool]] {$args[0].Count -gt 1});
-		$global:HashGroups = [Collections.Generic.List[Microsoft.PowerShell.Commands.FileHashInfo]]@($Groups.ForEach({$_.ForEach({Get-FileHash -Path $_})}));}
-
-		<#
-		$Groups.ToArray();
-		$HashArray.Add([System.BitConverter]::ToString(([System.Security.Cryptography.SHA256]::Create().ComputeHash([System.IO.File]::OpenRead("File.ext")))).Replace("-", "").ToLower());}
-		#>
+		[Func[IO.FileInfo,int64]]$global:InnerDelegateLength = {$args[0].Length};
+		[Func[IO.FileInfo,string]]$global:OuterDelegateName = {$args[0].FullName};
+		$global:LengthGroups = [Linq.Enumerable]::Where([Linq.Enumerable]::GroupBy($Directory, $InnerDelegateLength, $OuterDelegateName), [Func[Linq.IGrouping`2[Int64, String], bool]] {$args[0].Count -gt 1});
 		
+		[Func[Microsoft.PowerShell.Commands.FileHashInfo,string]]$global:InnerDelegateHash = {$args[0].Hash};
+		[Func[Microsoft.PowerShell.Commands.FileHashInfo,string]]$global:OuterDelegatePath = {$args[0].Path};
+		$global:Hashes = [Collections.Generic.List[Microsoft.PowerShell.Commands.FileHashInfo]]@($LengthGroups.ForEach({$_.ForEach({Get-FileHash -Path $_})}));
+		$global:HashGroups = [Linq.Enumerable]::OrderBy([Linq.Enumerable]::Where([Linq.Enumerable]::GroupBy($Hashes, $InnerDelegateHash, $OuterDelegatePath),`
+		[Func[Linq.IGrouping`2[string, string], bool]] {$args[0].Count -gt 1}), [Func[Linq.IGrouping`2[string, string], string]] {$args[0]});
+		$global:Prettier = {$HashGroups.ForEach({$_.Key, ("-"*64), $_, "`n"})}};
+
 		$false {$Properties = @{RecurseSubdirectories = [bool]0; IgnoreInaccessible = [bool]1;}
 		$EnumerationOptions = New-Object -TypeName System.IO.EnumerationOptions -Property $Properties;
-		$Directory = [System.Collections.Generic.List[System.IO.FileInfo]]@([System.IO.DirectoryInfo]::new("$PWD").EnumerateFiles('*.*', $EnumerationOptions));
-		[Func[System.IO.FileInfo,int64]]$InnerDelegate = {$args[0].Length}
-		[Func[System.IO.FileInfo,string]]$OuterDelegate = {$args[0].FullName}
-		[System.Linq.Enumerable]::GroupBy($Directory, $InnerDelegate, $OuterDelegate);
-		[System.Linq.Enumerable]::Where([System.Linq.Enumerable]::GroupBy($Directory, $InnerDelegate, $OuterDelegate), [System.Func[object, bool]] {$args[0].Count -gt 1});}
+		$Directory = [Collections.Generic.List[IO.FileInfo]]@([IO.DirectoryInfo]::new("$PWD").EnumerateFiles('*.*', $EnumerationOptions));
+		[Func[IO.FileInfo,int64]]$InnerDelegate = {$args[0].Length}
+		[Func[IO.FileInfo,string]]$OuterDelegate = {$args[0].FullName}
+		[Linq.Enumerable]::GroupBy($Directory, $InnerDelegate, $OuterDelegate);
+		[Linq.Enumerable]::Where([Linq.Enumerable]::GroupBy($Directory, $InnerDelegate, $OuterDelegate), [System.Func[object, bool]] {$args[0].Count -gt 1});}
 	}
 }
 
