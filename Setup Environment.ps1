@@ -118,10 +118,10 @@ function Get-DuplicatesV2
 		$true {$global:Properties = @{RecurseSubdirectories = [bool]1; IgnoreInaccessible = [bool]1;}
 		$global:EnumerationOptions = New-Object -TypeName IO.EnumerationOptions -Property $Properties;
 		$global:Directory = [Collections.Generic.List[IO.FileInfo]]@([IO.DirectoryInfo]::new("$PWD").EnumerateFiles('*.*', $EnumerationOptions));
-		$global:HashArray = [Collections.Generic.List[string]]::new();
 		[Func[IO.FileInfo,int64]]$global:InnerDelegate = {$args[0].Length};
 		[Func[IO.FileInfo,string]]$global:OuterDelegate = {$args[0].FullName};
-		$global:Groups = [Linq.Enumerable]::Where([Linq.Enumerable]::GroupBy($Directory, $InnerDelegate, $OuterDelegate), [Func[[Linq.IGrouping`2[Int64, String]], bool]] {$args[0].Count -gt 1})};
+		$global:Groups = [Linq.Enumerable]::Where([Linq.Enumerable]::GroupBy($Directory, $InnerDelegate, $OuterDelegate), [Func[[Linq.IGrouping`2[Int64, String]], bool]] {$args[0].Count -gt 1});
+		$global:HashGroups = [Collections.Generic.List[Microsoft.PowerShell.Commands.FileHashInfo]]@($Groups.ForEach({$_.ForEach({Get-FileHash -Path $_})}));}
 
 		<#
 		$Groups.ToArray();
