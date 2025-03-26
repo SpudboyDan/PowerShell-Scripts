@@ -17,8 +17,7 @@ function Get-DuplicatesV3
 
 	switch ($Recurse)
 	{
-		$true {$EnumOptions = [IO.EnumerationOptions]::new();
-		$EnumOptions.RecurseSubdirectories = $true;
+		$true {$EnumOptions = [IO.EnumerationOptions]@{RecurseSubdirectories = $true};
 		$Directory = [List[IO.FileInfo]]@([IO.DirectoryInfo]::new("$PWD").EnumerateFiles('*.*', $EnumOptions));
 		[Func[IO.FileInfo, int64]]$InnerDelegateLength = {$args[0].Length};
 		[Func[IO.FileInfo, string]]$OuterDelegateName = {$args[0].FullName};
@@ -29,8 +28,7 @@ function Get-DuplicatesV3
 
 		$HashGroups = [Linq.Enumerable]::OrderBy([Linq.Enumerable]::Where([Linq.Enumerable]::GroupBy($Hashes, $InnerDelegateHash, $OuterDelegatePath),`
 		[Func[Linq.IGrouping`2[string, string], bool]] {$args[0].Count -gt 1}), [Func[Linq.IGrouping`2[string, string], string]] {$args[0]});
-		$Prettier = {$HashGroups.ForEach({$_.Key, ("-"*64), $_.Replace("$PWD\", ""), "`n"})};
-		& $Prettier;}
+		& {$HashGroups.ForEach({$_.Key, ("-"*64), $_.Replace("$PWD\", ""), "`n"})}};
 
 		$false {$Directory = [List[IO.FileInfo]]@([IO.DirectoryInfo]::new("$PWD").EnumerateFiles('*.*'));
 		[Func[IO.FileInfo, int64]]$InnerDelegateLength = {$args[0].Length};
@@ -42,7 +40,6 @@ function Get-DuplicatesV3
 
 		$HashGroups = [Linq.Enumerable]::OrderBy([Linq.Enumerable]::Where([Linq.Enumerable]::GroupBy($Hashes, $InnerDelegateHash, $OuterDelegatePath),`
 		[Func[Linq.IGrouping`2[string, string], bool]] {$args[0].Count -gt 1}), [Func[Linq.IGrouping`2[string, string], string]] {$args[0]});
-		$Prettier = {$HashGroups.ForEach({$_.Key, ("-"*64), $_.Replace("$PWD\", ""), "`n"})};
-		& $Prettier;}
+		& {$HashGroups.ForEach({$_.Key, ("-"*64), $_.Replace("$PWD\", ""), "`n"})}};
 	}
 }
