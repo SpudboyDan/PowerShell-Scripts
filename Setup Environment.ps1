@@ -5,15 +5,19 @@
 # Functions
 #	Download-AdultSwim
 #	Get-AteraAgents
-# 	Get-Duplicates
 # 	Get-DuplicatesFast
-# 	Get-DuplicatesV2
+# 	Get-DuplicatesV3
 # 	Invoke-AteraApi
-# 	Play-Song
 # 	Print-Version
 # 	Set-ConsoleColor
 # 	Set-Keybinds
+#
+# Load dependencies
+# ================================================================================
+Import-Module -Global -Name Microsoft.PowerShell.Utility;
+. "$PSScriptRoot\Modules\Get-Duplicates.ps1";
 #*================================================================================
+
 function Download-AdultSwim
 	{
 		param ([Parameter(Mandatory = $true, Position = 0)] [string]$Uri)
@@ -71,26 +75,6 @@ function Get-AteraAgents
 		      }
 }
 
-function Get-Duplicates 
-	{
-		param ([switch]$Recurse)
-
-		switch ($Recurse)
-		{
-			$true	{Get-ChildItem -File -Recurse | Group-Object -Property Length | `
-				Where-Object {$_.Count -gt 1} | foreach {$_.Group} | Get-FileHash | `
-				Group-Object -Property Hash | Where-Object {$_.Count -gt 1} | `
-				foreach {$_.Group} | Select-Object -Property Path,Hash | `
-				Format-Table -GroupBy Hash -RepeatHeader | Out-Host -Paging}
-
-			$false 	{Get-ChildItem -File | Group-Object -Property Length | `
-				Where-Object {$_.Count -gt 1} | foreach {$_.Group} | Get-FileHash | `
-				Group-Object -Property Hash | Where-Object {$_.Count -gt 1} | `
-				foreach {$_.Group} | Select-Object -Property Path,Hash | `
-				Format-Table -GroupBy Hash -RepeatHeader | Out-Host -Paging}
-		}
-	}
-
 function Get-DuplicatesFast 
 	{
 		param ([switch]$Recurse)
@@ -108,36 +92,6 @@ function Get-DuplicatesFast
 				foreach {$_.Group}}
 		}
 	}
-
-function Get-DuplicatesV2
-{
-	param ([switch]$Recurse)
-	
-	switch ($Recurse)
-	{
-		$true {$global:Properties = @{RecurseSubdirectories = [bool]1; IgnoreInaccessible = [bool]1;}
-		$global:EnumerationOptions = New-Object -TypeName IO.EnumerationOptions -Property $Properties;
-		$global:Directory = [Collections.Generic.List[IO.FileInfo]]@([IO.DirectoryInfo]::new("$PWD").EnumerateFiles('*.*', $EnumerationOptions));
-		[Func[IO.FileInfo,int64]]$global:InnerDelegateLength = {$args[0].Length};
-		[Func[IO.FileInfo,string]]$global:OuterDelegateName = {$args[0].FullName};
-		$global:LengthGroups = [Linq.Enumerable]::Where([Linq.Enumerable]::GroupBy($Directory, $InnerDelegateLength, $OuterDelegateName), [Func[Linq.IGrouping`2[Int64, String], bool]] {$args[0].Count -gt 1});
-		
-		[Func[Microsoft.PowerShell.Commands.FileHashInfo,string]]$global:InnerDelegateHash = {$args[0].Hash};
-		[Func[Microsoft.PowerShell.Commands.FileHashInfo,string]]$global:OuterDelegatePath = {$args[0].Path};
-		$global:Hashes = [Collections.Generic.List[Microsoft.PowerShell.Commands.FileHashInfo]]@($LengthGroups.ForEach({$_.ForEach({Get-FileHash -Path $_})}));
-		$global:HashGroups = [Linq.Enumerable]::OrderBy([Linq.Enumerable]::Where([Linq.Enumerable]::GroupBy($Hashes, $InnerDelegateHash, $OuterDelegatePath),`
-		[Func[Linq.IGrouping`2[string, string], bool]] {$args[0].Count -gt 1}), [Func[Linq.IGrouping`2[string, string], string]] {$args[0]});
-		$global:Prettier = {$HashGroups.ForEach({$_.Key, ("-"*64), $_, "`n"})}};
-
-		$false {$Properties = @{RecurseSubdirectories = [bool]0; IgnoreInaccessible = [bool]1;}
-		$EnumerationOptions = New-Object -TypeName System.IO.EnumerationOptions -Property $Properties;
-		$Directory = [Collections.Generic.List[IO.FileInfo]]@([IO.DirectoryInfo]::new("$PWD").EnumerateFiles('*.*', $EnumerationOptions));
-		[Func[IO.FileInfo,int64]]$InnerDelegate = {$args[0].Length}
-		[Func[IO.FileInfo,string]]$OuterDelegate = {$args[0].FullName}
-		[Linq.Enumerable]::GroupBy($Directory, $InnerDelegate, $OuterDelegate);
-		[Linq.Enumerable]::Where([Linq.Enumerable]::GroupBy($Directory, $InnerDelegate, $OuterDelegate), [System.Func[object, bool]] {$args[0].Count -gt 1});}
-	}
-}
 
 function Invoke-AteraApi
 {
@@ -197,28 +151,6 @@ function Invoke-AteraApi
   					"x-api-key"="$Key"}}
 		  	}
 }
-	
-function Play-Song
-	{
-		[Console]::Beep(466.16,300);
-		[Console]::Beep(311.13,450);
-		[Console]::Beep(622.25,300);
-		[Console]::Beep(523.25,150);
-		[Console]::Beep(466.16,300);
-		[Console]::Beep(311.13,450);
-
-		<#
-		[Console]::Beep(466.16,300);
-		[Console]::Beep(415.30,150);
-		[Console]::Beep(392,150);
-		[Console]::Beep(392,150);
-		[Console]::Beep(415.30,150);
-		[Console]::Beep(466.16,150);
-		[Console]::Beep(311.13,300);
-		[Console]::Beep(349.23,300);
-		[Console]::Beep(392,600);
-		#>
-	}
 
 function Print-Version
 	{
