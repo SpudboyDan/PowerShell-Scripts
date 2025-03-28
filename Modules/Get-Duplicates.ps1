@@ -28,8 +28,7 @@ function Get-DuplicatesV3 {
 
 	switch ($Recurse) {
 		$true {
-		$EnumOptions = [IO.EnumerationOptions]@{RecurseSubdirectories = $true};
-		$Directory = [List[IO.FileInfo]]@([IO.DirectoryInfo]::new("$PWD").EnumerateFiles("*.*", $EnumOptions));
+		[IEnumerable[IO.FileInfo]]$Directory = [IO.DirectoryInfo]::new("$PWD").EnumerateFiles("*.*", [IO.EnumerationOptions]@{RecurseSubdirectories = $true})
 		[Func[IO.FileInfo, int64]]$InnerDelegateLength = {$args[0].Length};
 		[Func[IO.FileInfo, string]]$OuterDelegateName = {$args[0].FullName};
 		$LengthGroups = [Linq.Enumerable]::GroupBy($Directory, $InnerDelegateLength, $OuterDelegateName);
@@ -37,6 +36,7 @@ function Get-DuplicatesV3 {
 		[Func[Linq.IGrouping`2[Int64, String], bool]]$FileDelegate = {$args[0].Count -gt 1 -and $args[0].Key -le 2147483591};
 		$FileGroups = [Linq.Enumerable]::Where($LengthGroups, $FileDelegate);
 		$LengthGroups.Dispose();
+		[GC]::Collect();
 
 		[Func[TinyHashInfo, string]]$InnerDelegateHash = {$args[0].Hash};
 		[Func[TinyHashInfo, string]]$OuterDelegatePath = {$args[0].Path};
@@ -47,7 +47,6 @@ function Get-DuplicatesV3 {
 		}));
 		$FileGroups.Dispose();
 		$HashGroups = [Linq.Enumerable]::GroupBy($Hashes, $InnerDelegateHash, $OuterDelegatePath);
-		[GC]::Collect();
 
 		[Func[Linq.IGrouping`2[string, string], bool]]$DuplicatesDelegate = {$args[0].Count -gt 1};
 		[Func[Linq.IGrouping`2[string, string], string]]$OrderedDelegate = {$args[0]};
@@ -63,8 +62,7 @@ function Get-DuplicatesV3 {
 		}
 
 		$false {
-		$EnumOptions = [IO.EnumerationOptions]@{RecurseSubdirectories = $false};
-		$Directory = [List[IO.FileInfo]]@([IO.DirectoryInfo]::new("$PWD").EnumerateFiles("*.*", $EnumOptions));
+		[IEnumerable[IO.FileInfo]]$Directory = [IO.DirectoryInfo]::new("$PWD").EnumerateFiles("*.*", [IO.EnumerationOptions]@{RecurseSubdirectories = $false})
 		[Func[IO.FileInfo, int64]]$InnerDelegateLength = {$args[0].Length};
 		[Func[IO.FileInfo, string]]$OuterDelegateName = {$args[0].FullName};
 		$LengthGroups = [Linq.Enumerable]::GroupBy($Directory, $InnerDelegateLength, $OuterDelegateName);
@@ -72,6 +70,7 @@ function Get-DuplicatesV3 {
 		[Func[Linq.IGrouping`2[Int64, String], bool]]$FileDelegate = {$args[0].Count -gt 1 -and $args[0].Key -le 2147483591};
 		$FileGroups = [Linq.Enumerable]::Where($LengthGroups, $FileDelegate);
 		$LengthGroups.Dispose();
+		[GC]::Collect();
 
 		[Func[TinyHashInfo, string]]$InnerDelegateHash = {$args[0].Hash};
 		[Func[TinyHashInfo, string]]$OuterDelegatePath = {$args[0].Path};
@@ -82,7 +81,6 @@ function Get-DuplicatesV3 {
 		}));
 		$FileGroups.Dispose();
 		$HashGroups = [Linq.Enumerable]::GroupBy($Hashes, $InnerDelegateHash, $OuterDelegatePath);
-		[GC]::Collect();
 
 		[Func[Linq.IGrouping`2[string, string], bool]]$DuplicatesDelegate = {$args[0].Count -gt 1};
 		[Func[Linq.IGrouping`2[string, string], string]]$OrderedDelegate = {$args[0]};

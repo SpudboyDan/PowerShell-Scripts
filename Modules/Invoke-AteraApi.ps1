@@ -1,3 +1,9 @@
+class ApiResults {
+	# Class properties
+	[int]	$PageNum
+	[int]	$ItemNum
+}
+
 function Invoke-AteraApi {
 	param ([parameter(Mandatory = $true, Position = 0)]
 		[string]$Key,
