@@ -23,13 +23,12 @@ class TinyHashInfo : Microsoft.PowerShell.Commands.FileHashInfo {
 	}
 }
 
-function Get-DuplicatesV3
-{
+function Get-DuplicatesV3 {
 	param ([switch]$Recurse)
 
-	switch ($Recurse)
-	{
-		$true {$EnumOptions = [IO.EnumerationOptions]@{RecurseSubdirectories = $true};
+	switch ($Recurse) {
+		$true {
+		$EnumOptions = [IO.EnumerationOptions]@{RecurseSubdirectories = $true};
 		$Directory = [List[IO.FileInfo]]@([IO.DirectoryInfo]::new("$PWD").EnumerateFiles("*.*", $EnumOptions));
 		[Func[IO.FileInfo, int64]]$InnerDelegateLength = {$args[0].Length};
 		[Func[IO.FileInfo, string]]$OuterDelegateName = {$args[0].FullName};
@@ -41,7 +40,11 @@ function Get-DuplicatesV3
 
 		[Func[TinyHashInfo, string]]$InnerDelegateHash = {$args[0].Hash};
 		[Func[TinyHashInfo, string]]$OuterDelegatePath = {$args[0].Path};
-		$Hashes = [List[TinyHashInfo]]@($FileGroups.ForEach({$_.ForEach({[TinyHashInfo]@{Hash = [BitConverter]::ToString([IO.Hashing.XxHash3]::Hash([IO.File]::ReadAllBytes("$_"))).Replace("-", ""); Path = "$_";}})}));
+		$Hashes = [List[TinyHashInfo]]@($FileGroups.ForEach({
+			$_.ForEach({
+				[TinyHashInfo]@{Hash = [BitConverter]::ToString([IO.Hashing.XxHash3]::Hash([IO.File]::ReadAllBytes("$_"))).Replace("-", ""); Path = "$_";}
+			})
+		}));
 		$FileGroups.Dispose();
 		$HashGroups = [Linq.Enumerable]::GroupBy($Hashes, $InnerDelegateHash, $OuterDelegatePath);
 		[GC]::Collect();
@@ -53,11 +56,14 @@ function Get-DuplicatesV3
 
 		$HashDuplicatesOrdered = [Linq.Enumerable]::OrderBy($HashGroupDuplicates, $OrderedDelegate);
 		$HashGroupDuplicates.Dispose();
-		$HashDuplicatesOrdered.ForEach({$_.Key, "----------------", $_.Replace("$PWD\", ""), "`n"});
+		$HashDuplicatesOrdered.ForEach({
+			$_.Key, "----------------", $_.Replace("$PWD\", ""), "`n"
+		});
 		$HashDuplicatesOrdered.Dispose();
 		}
 
-		$false {$EnumOptions = [IO.EnumerationOptions]@{RecurseSubdirectories = $false};
+		$false {
+		$EnumOptions = [IO.EnumerationOptions]@{RecurseSubdirectories = $false};
 		$Directory = [List[IO.FileInfo]]@([IO.DirectoryInfo]::new("$PWD").EnumerateFiles("*.*", $EnumOptions));
 		[Func[IO.FileInfo, int64]]$InnerDelegateLength = {$args[0].Length};
 		[Func[IO.FileInfo, string]]$OuterDelegateName = {$args[0].FullName};
@@ -69,7 +75,11 @@ function Get-DuplicatesV3
 
 		[Func[TinyHashInfo, string]]$InnerDelegateHash = {$args[0].Hash};
 		[Func[TinyHashInfo, string]]$OuterDelegatePath = {$args[0].Path};
-		$Hashes = [List[TinyHashInfo]]@($FileGroups.ForEach({$_.ForEach({[TinyHashInfo]@{Hash = [BitConverter]::ToString([IO.Hashing.XxHash3]::Hash([IO.File]::ReadAllBytes("$_"))).Replace("-", ""); Path = "$_";}})}));
+		$Hashes = [List[TinyHashInfo]]@($FileGroups.ForEach({
+			$_.ForEach({
+				[TinyHashInfo]@{Hash = [BitConverter]::ToString([IO.Hashing.XxHash3]::Hash([IO.File]::ReadAllBytes("$_"))).Replace("-", ""); Path = "$_";}
+			})
+		}));
 		$FileGroups.Dispose();
 		$HashGroups = [Linq.Enumerable]::GroupBy($Hashes, $InnerDelegateHash, $OuterDelegatePath);
 		[GC]::Collect();
@@ -81,7 +91,9 @@ function Get-DuplicatesV3
 
 		$HashDuplicatesOrdered = [Linq.Enumerable]::OrderBy($HashGroupDuplicates, $OrderedDelegate);
 		$HashGroupDuplicates.Dispose();
-		$HashDuplicatesOrdered.ForEach({$_.Key, "----------------", $_.Replace("$PWD\", ""), "`n"});
+		$HashDuplicatesOrdered.ForEach({
+			$_.Key, "----------------", $_.Replace("$PWD\", ""), "`n"
+		});
 		$HashDuplicatesOrdered.Dispose();
 		}
 	}

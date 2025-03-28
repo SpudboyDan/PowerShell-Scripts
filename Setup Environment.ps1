@@ -15,29 +15,22 @@
 # ================================================================================
 Import-Module -Global -Name Microsoft.PowerShell.Utility;
 . "$PSScriptRoot\Modules\Get-Duplicates.ps1";
+. "$PSScriptRoot\Modules\Invoke-AteraApi.ps1";
 #*================================================================================
-
-function Download-AdultSwim
-	{
-		param ([Parameter(Mandatory = $true, Position = 0)] [string]$Uri)
-
-		try
-		{
-			$Links = (Invoke-WebRequest -Uri $Uri).Links.Href | Select-String -Pattern ("$($Uri.Replace('https://www.adultswim.com',''))" + "/[a-z0-9\-]+")
-			foreach ($Link in $Links)
-			{
-				yt-dlp "https://www.adultswim.com$Link"
-			}
-		}
-
-		catch
-		{
-			$PSCmdlet.ThrowTerminatingError($PSItem)
+function Download-AdultSwim {
+	param ([Parameter(Mandatory = $true, Position = 0)] [string]$Uri)
+	try {
+		$Links = (Invoke-WebRequest -Uri $Uri).Links.Href | Select-String -Pattern ("$($Uri.Replace('https://www.adultswim.com',''))" + "/[a-z0-9\-]+")
+		foreach ($Link in $Links) {
+			yt-dlp "https://www.adultswim.com$Link"
 		}
 	}
+	catch {
+		$PSCmdlet.ThrowTerminatingError($PSItem)
+	}
+}
 
-function Get-AteraAgents
-{
+function Get-AteraAgents {
 	param ([parameter(Mandatory = $true, Position = 0)]
 		[string]$Key,
 		[parameter(Mandatory = $false, Position = 1)]
@@ -62,7 +55,8 @@ function Get-AteraAgents
   						"accept"="application/json;charset=utf-8,*/*"
   						"accept-encoding"="gzip, deflate, br, zstd"
   						"accept-language"="en-US,en;q=0.9"
-  						"x-api-key"="$Key"}).items}}
+  						"x-api-key"="$Key"}).items}
+			}
 
 		$false	{(Invoke-RestMethod -Uri "https://app.atera.com/api/v3/agents?page=$PageNumber&itemsInPage=$ItemAmount" -Headers @{
 				"method"="GET"
@@ -70,77 +64,17 @@ function Get-AteraAgents
   				"accept"="application/json;charset=utf-8,*/*"
   				"accept-encoding"="gzip, deflate, br, zstd"
   				"accept-language"="en-US,en;q=0.9"
-  				"x-api-key"="$Key"}).items}
-		      }
-}
-
-function Invoke-AteraApi
-{
-	param ([parameter(Mandatory = $true, Position = 0)]
-		[string]$Key,
-		[parameter(Mandatory = $true, Position = 1)]
-		[ValidateSet("Agents", "Customers", "CustomerAgents", "CustomerById", "MachineByName")]
-		[string]$Query,
-		[parameter(Mandatory = $false, Position = 2)]
-		[long]$CustomerId,
-		[parameter(Mandatory = $false, Position = 3)]
-		[string]$MachineName,
-		[parameter(Mandatory = $false, Position = 4)]
-		[int]$PageNumber = 1,
-		[parameter(Mandatory = $false, Position = 5)]
-		[int]$ItemAmount = 20)
-
-	switch ($Query) {
-		"Agents" 	{Invoke-RestMethod -Uri "https://app.atera.com/api/v3/agents?page=$PageNumber&itemsInPage=$ItemAmount" -Headers @{
-					"method"="GET"
-					"scheme"="https"
-  					"accept"="application/json;charset=utf-8,*/*"
-  					"accept-encoding"="gzip, deflate, br, zstd"
-  					"accept-language"="en-US,en;q=0.9"
-  					"x-api-key"="$Key"}}
-
-		"Customers"	{Invoke-RestMethod -Uri "https://app.atera.com/api/v3/customers?page=$PageNumber&itemsInPage=$ItemAmount" -Headers @{
-					"method"="GET"
-					"scheme"="https"
-  					"accept"="application/json;charset=utf-8,*/*"
-  					"accept-encoding"="gzip, deflate, br, zstd"
-  					"accept-language"="en-US,en;q=0.9"
-  					"x-api-key"="$Key"}}
-
-		"CustomerAgents"	{Invoke-RestMethod -Uri "https://app.atera.com/api/v3/agents/customer/$CustomerId`?page=$PageNumber&itemsInPage=$ItemAmount" -Headers @{
-						"method"="GET"
-						"scheme"="https"
-  						"accept"="application/json;charset=utf-8,*/*"
-  						"accept-encoding"="gzip, deflate, br, zstd"
-  						"accept-language"="en-US,en;q=0.9"
-  						"x-api-key"="$Key"}}
-
-		"CustomerById"	{Invoke-RestMethod -Uri "https://app.atera.com/api/v3/customers/$CustomerId" -Headers @{
-					"method"="GET"
-					"scheme"="https"
-  					"accept"="application/json;charset=utf-8,*/*"
-  					"accept-encoding"="gzip, deflate, br, zstd"
-  					"accept-language"="en-US,en;q=0.9"
-  					"x-api-key"="$Key"}}
-
-		"MachineByName"	{Invoke-RestMethod -Uri "https://app.atera.com/api/v3/agents/machine/$MachineName`?page=$PageNumber&itemsInPage=$ItemAmount" -Headers @{
-					"method"="GET"
-					"scheme"="https"
-  					"accept"="application/json;charset=utf-8,*/*"
-  					"accept-encoding"="gzip, deflate, br, zstd"
-  					"accept-language"="en-US,en;q=0.9"
-  					"x-api-key"="$Key"}}
-		  	}
-}
-
-function Print-Version
-	{
-  		$HostVersion = "$($Host.Version.Major)`.$($Host.Version.Minor)";
-		$Host.UI.RawUI.WindowTitle = "PowerShell $HostVersion";
+  				"x-api-key"="$Key"}).items
+			}
 	}
+}
 
-function Set-ConsoleColor
-{
+function Print-Version {
+  	$HostVersion = "$($Host.Version.Major)`.$($Host.Version.Minor)";
+	$Host.UI.RawUI.WindowTitle = "PowerShell $HostVersion";
+}
+
+function Set-ConsoleColor {
 	param ([Parameter(Mandatory = $true, Position = 0)]
 		[ValidateSet("BackgroundColor", "ForegroundColor")]
 		[string]$Layer,
@@ -153,8 +87,7 @@ function Set-ConsoleColor
 	[System.Console]::$Layer = "$Color";
 }
 
-function Set-Keybinds
-	{
-		Set-PSReadLineKeyHandler -Chord Shift+F1 -Function ForwardChar;
-		Set-PSReadLineKeyHandler -Chord Shift+F2 -Function ForwardWord;
-	}
+function Set-Keybinds {
+	Set-PSReadLineKeyHandler -Chord Shift+F1 -Function ForwardChar;
+	Set-PSReadLineKeyHandler -Chord Shift+F2 -Function ForwardWord;
+}
