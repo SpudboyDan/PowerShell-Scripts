@@ -29,92 +29,60 @@ function Get-DuplicatesV3
 
 	switch ($Recurse)
 	{
-		$true {
-		$EnumOptions = [IO.EnumerationOptions]@{RecurseSubdirectories = $true};
+		$true {$EnumOptions = [IO.EnumerationOptions]@{RecurseSubdirectories = $true};
 		$Directory = [List[IO.FileInfo]]@([IO.DirectoryInfo]::new("$PWD").EnumerateFiles("*.*", $EnumOptions));
 		[Func[IO.FileInfo, int64]]$InnerDelegateLength = {$args[0].Length};
 		[Func[IO.FileInfo, string]]$OuterDelegateName = {$args[0].FullName};
 		$LengthGroups = [Linq.Enumerable]::GroupBy($Directory, $InnerDelegateLength, $OuterDelegateName);
 
-		[Func[Linq.IGrouping`2[Int64, String], bool]]$SmallFileDelegate = {$args[0].Count -gt 1 -and $args[0].Key -le 2147483591};
-		[Func[Linq.IGrouping`2[Int64, String], bool]]$LargeFileDelegate = {$args[0].Count -gt 1 -and $args[0].Key -gt 2147483591};
-		$SmallFileGroups = [Linq.Enumerable]::Where($LengthGroups, $SmallFileDelegate);
-		$LargeFileGroups = [Linq.Enumerable]::Where($LengthGroups, $LargeFileDelegate);
+		[Func[Linq.IGrouping`2[Int64, String], bool]]$FileDelegate = {$args[0].Count -gt 1 -and $args[0].Key -le 2147483591};
+		$FileGroups = [Linq.Enumerable]::Where($LengthGroups, $FileDelegate);
 		$LengthGroups.Dispose();
 
 		[Func[TinyHashInfo, string]]$InnerDelegateHash = {$args[0].Hash};
 		[Func[TinyHashInfo, string]]$OuterDelegatePath = {$args[0].Path};
-		$LargeHashes = [List[TinyHashInfo]]@(
-		$LargeFileGroups.ForEach({$_.ForEach({[TinyHashInfo]@{Hash = [System.BitConverter]::ToString([System.IO.Hashing.XxHash3]::Hash([System.IO.BinaryReader]::new(
-		[System.IO.FileStream]::new("$_", [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read)).ReadBytes(2147483591))).Replace("-", ""); Path = "$_";}})}));
-		$LargeFileGroups.Dispose();
-		$LargeHashGroups = [Linq.Enumerable]::GroupBy($LargeHashes, $InnerDelegateHash, $OuterDelegatePath);
-
-		$SmallHashes = [List[TinyHashInfo]]@($SmallFileGroups.ForEach({$_.ForEach({[TinyHashInfo]@{Hash = [BitConverter]::ToString([IO.Hashing.XxHash3]::Hash([IO.File]::ReadAllBytes("$_"))).Replace("-", ""); Path = "$_";}})}));
-		$SmallFileGroups.Dispose();
-		$SmallHashGroups = [Linq.Enumerable]::GroupBy($SmallHashes, $InnerDelegateHash, $OuterDelegatePath);
+		$Hashes = [List[TinyHashInfo]]@($FileGroups.ForEach({$_.ForEach({[TinyHashInfo]@{Hash = [BitConverter]::ToString([IO.Hashing.XxHash3]::Hash([IO.File]::ReadAllBytes("$_"))).Replace("-", ""); Path = "$_";}})}));
+		$FileGroups.Dispose();
+		$HashGroups = [Linq.Enumerable]::GroupBy($Hashes, $InnerDelegateHash, $OuterDelegatePath);
+		[GC]::Collect();
 
 		[Func[Linq.IGrouping`2[string, string], bool]]$DuplicatesDelegate = {$args[0].Count -gt 1};
 		[Func[Linq.IGrouping`2[string, string], string]]$OrderedDelegate = {$args[0]};
-		$LargeHashGroupDuplicates = [Linq.Enumerable]::Where($LargeHashGroups, $DuplicatesDelegate);
-		$LargeHashGroups.Dispose();
+		$HashGroupDuplicates = [Linq.Enumerable]::Where($HashGroups, $DuplicatesDelegate);
+		$HashGroups.Dispose();
 
-		$SmallHashGroupDuplicates = [Linq.Enumerable]::Where($SmallHashGroups, $DuplicatesDelegate);
-		$SmallHashGroups.Dispose();
-
-		$LargeHashDuplicatesOrdered = [Linq.Enumerable]::OrderBy($LargeHashGroupDuplicates, $OrderedDelegate);
-		$LargeHashGroupDuplicates.Dispose();
-		$LargeHashDuplicatesOrdered.ForEach({$_.Key, "----------------", $_.Replace("$PWD\", ""), "`n"});
-		$LargeHashDuplicatesOrdered.Dispose();
-
-		$SmallHashDuplicatesOrdered = [Linq.Enumerable]::OrderBy($SmallHashGroupDuplicates, $OrderedDelegate);
-		$SmallHashGroupDuplicates.Dispose();
-		$SmallHashDuplicatesOrdered.ForEach({$_.Key, "----------------", $_.Replace("$PWD\", ""), "`n"});
-		$SmallHashDuplicatesOrdered.Dispose();
+		$HashDuplicatesOrdered = [Linq.Enumerable]::OrderBy($HashGroupDuplicates, $OrderedDelegate);
+		$HashGroupDuplicates.Dispose();
+		$HashDuplicatesOrdered.ForEach({$_.Key, "----------------", $_.Replace("$PWD\", ""), "`n"});
+		$HashDuplicatesOrdered.Dispose();
 		}
 
-		$false {
-		$EnumOptions = [IO.EnumerationOptions]@{RecurseSubdirectories = $false};
+		$false {$EnumOptions = [IO.EnumerationOptions]@{RecurseSubdirectories = $false};
 		$Directory = [List[IO.FileInfo]]@([IO.DirectoryInfo]::new("$PWD").EnumerateFiles("*.*", $EnumOptions));
 		[Func[IO.FileInfo, int64]]$InnerDelegateLength = {$args[0].Length};
 		[Func[IO.FileInfo, string]]$OuterDelegateName = {$args[0].FullName};
 		$LengthGroups = [Linq.Enumerable]::GroupBy($Directory, $InnerDelegateLength, $OuterDelegateName);
 
-		[Func[Linq.IGrouping`2[Int64, String], bool]]$SmallFileDelegate = {$args[0].Count -gt 1 -and $args[0].Key -le 2147483591};
-		[Func[Linq.IGrouping`2[Int64, String], bool]]$LargeFileDelegate = {$args[0].Count -gt 1 -and $args[0].Key -gt 2147483591};
-		$SmallFileGroups = [Linq.Enumerable]::Where($LengthGroups, $SmallFileDelegate);
-		$LargeFileGroups = [Linq.Enumerable]::Where($LengthGroups, $LargeFileDelegate);
+		[Func[Linq.IGrouping`2[Int64, String], bool]]$FileDelegate = {$args[0].Count -gt 1 -and $args[0].Key -le 2147483591};
+		$FileGroups = [Linq.Enumerable]::Where($LengthGroups, $FileDelegate);
 		$LengthGroups.Dispose();
 
 		[Func[TinyHashInfo, string]]$InnerDelegateHash = {$args[0].Hash};
 		[Func[TinyHashInfo, string]]$OuterDelegatePath = {$args[0].Path};
-		$LargeHashes = [List[TinyHashInfo]]@(
-		$LargeFileGroups.ForEach({$_.ForEach({[TinyHashInfo]@{Hash = [System.BitConverter]::ToString([System.IO.Hashing.XxHash3]::Hash([System.IO.BinaryReader]::new(
-		[System.IO.FileStream]::new("$_", [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read)).ReadBytes(2147483591))).Replace("-", ""); Path = "$_";}})}));
-		$LargeFileGroups.Dispose();
-		$LargeHashGroups = [Linq.Enumerable]::GroupBy($LargeHashes, $InnerDelegateHash, $OuterDelegatePath);
-
-		$SmallHashes = [List[TinyHashInfo]]@($SmallFileGroups.ForEach({$_.ForEach({[TinyHashInfo]@{Hash = [BitConverter]::ToString([IO.Hashing.XxHash3]::Hash([IO.File]::ReadAllBytes("$_"))).Replace("-", ""); Path = "$_";}})}));
-		$SmallFileGroups.Dispose();
-		$SmallHashGroups = [Linq.Enumerable]::GroupBy($SmallHashes, $InnerDelegateHash, $OuterDelegatePath);
+		$Hashes = [List[TinyHashInfo]]@($FileGroups.ForEach({$_.ForEach({[TinyHashInfo]@{Hash = [BitConverter]::ToString([IO.Hashing.XxHash3]::Hash([IO.File]::ReadAllBytes("$_"))).Replace("-", ""); Path = "$_";}})}));
+		$FileGroups.Dispose();
+		$HashGroups = [Linq.Enumerable]::GroupBy($Hashes, $InnerDelegateHash, $OuterDelegatePath);
+		[GC]::Collect();
 
 		[Func[Linq.IGrouping`2[string, string], bool]]$DuplicatesDelegate = {$args[0].Count -gt 1};
 		[Func[Linq.IGrouping`2[string, string], string]]$OrderedDelegate = {$args[0]};
-		$LargeHashGroupDuplicates = [Linq.Enumerable]::Where($LargeHashGroups, $DuplicatesDelegate);
-		$LargeHashGroups.Dispose();
+		$HashGroupDuplicates = [Linq.Enumerable]::Where($HashGroups, $DuplicatesDelegate);
+		$HashGroups.Dispose();
 
-		$SmallHashGroupDuplicates = [Linq.Enumerable]::Where($SmallHashGroups, $DuplicatesDelegate);
-		$SmallHashGroups.Dispose();
-
-		$LargeHashDuplicatesOrdered = [Linq.Enumerable]::OrderBy($LargeHashGroupDuplicates, $OrderedDelegate);
-		$LargeHashGroupDuplicates.Dispose();
-		$LargeHashDuplicatesOrdered.ForEach({$_.Key, "----------------", $_.Replace("$PWD\", ""), "`n"});
-		$LargeHashDuplicatesOrdered.Dispose();
-
-		$SmallHashDuplicatesOrdered = [Linq.Enumerable]::OrderBy($SmallHashGroupDuplicates, $OrderedDelegate);
-		$SmallHashGroupDuplicates.Dispose();
-		$SmallHashDuplicatesOrdered.ForEach({$_.Key, "----------------", $_.Replace("$PWD\", ""), "`n"});
-		$SmallHashDuplicatesOrdered.Dispose();
+		$HashDuplicatesOrdered = [Linq.Enumerable]::OrderBy($HashGroupDuplicates, $OrderedDelegate);
+		$HashGroupDuplicates.Dispose();
+		$HashDuplicatesOrdered.ForEach({$_.Key, "----------------", $_.Replace("$PWD\", ""), "`n"});
+		$HashDuplicatesOrdered.Dispose();
 		}
 	}
 }
