@@ -5,7 +5,6 @@
 # Functions
 #	Download-AdultSwim
 #	Get-AteraAgents
-# 	Get-DuplicatesFast
 # 	Get-DuplicatesV3
 # 	Invoke-AteraApi
 # 	Print-Version
@@ -74,24 +73,6 @@ function Get-AteraAgents
   				"x-api-key"="$Key"}).items}
 		      }
 }
-
-function Get-DuplicatesFast 
-	{
-		param ([switch]$Recurse)
-
-		switch ($Recurse)
-		{
-			$true	{Get-ChildItem -File -Recurse | Group-Object -Property Length | `
-				Where-Object {$_.Count -gt 1} | foreach {$_.Group} | Get-FileHash | `
-				Group-Object -Property Hash | Where-Object {$_.Count -gt 1} | `
-				foreach {$_.Group}}
-
-			$false	{Get-ChildItem -File | Group-Object -Property Length | `
-				Where-Object {$_.Count -gt 1} | foreach {$_.Group} | Get-FileHash | `
-				Group-Object -Property Hash | Where-Object {$_.Count -gt 1} | `
-				foreach {$_.Group}}
-		}
-	}
 
 function Invoke-AteraApi
 {

@@ -19,4 +19,4 @@
 
 Print-Version;
 Set-Keybinds;
-Write-Host "Welcome back, Lane" -ForegroundColor Red;
+Write-Host -ForegroundColor Cyan -Message "Welcome back, Lane";
