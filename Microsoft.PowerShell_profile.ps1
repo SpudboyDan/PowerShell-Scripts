@@ -5,8 +5,7 @@
 # Functions
 #	Download-AdultSwim
 #	Get-AteraAgents
-# 	Get-DuplicatesFast
-# 	Get-DuplicatesV2
+# 	Get-DuplicatesV3
 # 	Invoke-AteraApi
 # 	Print-Version
 # 	Set-ConsoleColor
