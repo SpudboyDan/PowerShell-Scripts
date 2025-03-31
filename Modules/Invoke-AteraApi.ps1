@@ -1,14 +1,8 @@
-class ApiResults {
-	# Class properties
-	[int]	$PageNum
-	[int]	$ItemNum
-}
-
 function Invoke-AteraApi {
 	param ([parameter(Mandatory = $true, Position = 0)]
 		[string]$Key,
 		[parameter(Mandatory = $true, Position = 1)]
-		[ValidateSet("Agents", "Customers", "CustomerAgents", "CustomerById", "MachineByName")]
+		[ValidateSet("Agents", "Customers", "CustomerAgents", "MachineByName")]
 		[string]$Query,
 		[parameter(Mandatory = $false, Position = 2)]
 		[long]$CustomerId,
@@ -20,49 +14,199 @@ function Invoke-AteraApi {
 		[int]$ItemAmount = 20)
 
 	switch ($Query) {
-		"Agents" 	{Invoke-RestMethod -Uri "https://app.atera.com/api/v3/agents?page=$PageNumber&itemsInPage=$ItemAmount" -Headers @{
+		"Agents" {$RestParams = @{
+				Uri = "https://app.atera.com/api/v3/agents?page=$PageNumber&itemsInPage=$ItemAmount";
+				Headers = @{
 					"method"="GET"
 					"scheme"="https"
   					"accept"="application/json;charset=utf-8,*/*"
   					"accept-encoding"="gzip, deflate, br, zstd"
   					"accept-language"="en-US,en;q=0.9"
-  					"x-api-key"="$Key"}
+  					"x-api-key"="$Key"};
+				ErrorAction = "Stop";}
+
+				try {
+					$Call = Invoke-RestMethod @RestParams;
+				}
+				catch {
+					$PSCmdlet.ThrowTerminatingError($PSItem);
+				}
+					
+				$FilteredResults = @{Property =`
+					"AppViewUrl",
+					"FolderName",
+					"CustomerID",
+					"CustomerName",
+					"AgentName",
+					"MachineName",
+					"Online",
+					"LastSeen",
+					"Processor",
+					"Memory",
+					"Vendor",
+					"VendorSerialNumber",
+					"VendorBrandModel",
+					"BiosManufacturer",
+					"BiosVersion",
+					"BiosReleaseDate",
+					"HardwareDisks",
+					"BatteryInfo",
+					"OS",
+					"LastRebootTime",
+					"OSVersion",
+					"OSBuild",
+					"LastLoginUser"};
+
+				$Call.items | Select-Object @FilteredResults;
+
+				$PageItemResults = @{Object =`
+					"Page: $($Call.page)`n",
+					"`bItems in page: $($Call.itemsInPage)`n",
+					"`bTotal item count: $($Call.totalItemCount)`n",
+					"`bTotal pages: $($Call.totalPages)`n";
+					ForegroundColor = "Yellow"};
+
+				Write-Host @PageItemResults;
+			}
+
+		"Customers" {$RestParams = @{
+				Uri = "https://app.atera.com/api/v3/customers?page=$PageNumber&itemsInPage=$ItemAmount";
+				Headers = @{
+					"method"="GET"
+					"scheme"="https"
+  					"accept"="application/json;charset=utf-8,*/*"
+  					"accept-encoding"="gzip, deflate, br, zstd"
+  					"accept-language"="en-US,en;q=0.9"
+  					"x-api-key"="$Key"};
+				ErrorAction = "Stop";}
+					
+				try {
+					$Call = Invoke-RestMethod @RestParams;
+				}
+				catch {
+					$PSCmdlet.ThrowTerminatingError($PSItem);
 				}
 
-		"Customers"	{Invoke-RestMethod -Uri "https://app.atera.com/api/v3/customers?page=$PageNumber&itemsInPage=$ItemAmount" -Headers @{
+				$FilteredResults = @{Property =`
+					"CustomerID",
+					"CustomerName"};
+
+				$Call.items | Select-Object @FilteredResults;
+
+				$PageItemResults = @{Object =`
+					"Page: $($Call.page)`n",
+					"`bItems in page: $($Call.itemsInPage)`n",
+					"`bTotal item count: $($Call.totalItemCount)`n",
+					"`bTotal pages: $($Call.totalPages)`n";
+					ForegroundColor = "Yellow"};
+
+				Write-Host @PageItemResults;
+			}
+
+	"CustomerAgents" {$RestParams = @{
+				Uri = "https://app.atera.com/api/v3/agents/customer/$CustomerId`?page=$PageNumber&itemsInPage=$ItemAmount";
+				Headers = @{
 					"method"="GET"
 					"scheme"="https"
   					"accept"="application/json;charset=utf-8,*/*"
   					"accept-encoding"="gzip, deflate, br, zstd"
   					"accept-language"="en-US,en;q=0.9"
-  					"x-api-key"="$Key"}
+  					"x-api-key"="$Key"};
+				ErrorAction = "Stop";}
+
+				try {
+					$Call = Invoke-RestMethod @RestParams;
+					if ($Call.totalItemCount -eq 0) {
+						throw "Customer with ID '$CustomerId' was not found"
+					}
+				}
+				catch {
+					$PSCmdlet.ThrowTerminatingError($PSItem);
 				}
 
-	"CustomerAgents"	{Invoke-RestMethod -Uri "https://app.atera.com/api/v3/agents/customer/$CustomerId`?page=$PageNumber&itemsInPage=$ItemAmount" -Headers @{
-					"method"="GET"
-					"scheme"="https"
-  					"accept"="application/json;charset=utf-8,*/*"
-  					"accept-encoding"="gzip, deflate, br, zstd"
-  					"accept-language"="en-US,en;q=0.9"
-  					"x-api-key"="$Key"}
-				}
+				$FilteredResults = @{Property =`
+					"AppViewUrl",
+					"FolderName",
+					"CustomerID",
+					"CustomerName",
+					"AgentName",
+					"MachineName",
+					"Online",
+					"LastSeen",
+					"Processor",
+					"Memory",
+					"Vendor",
+					"VendorSerialNumber",
+					"VendorBrandModel",
+					"BiosManufacturer",
+					"BiosVersion",
+					"BiosReleaseDate",
+					"HardwareDisks",
+					"BatteryInfo",
+					"OS",
+					"LastRebootTime",
+					"OSVersion",
+					"OSBuild",
+					"LastLoginUser"};
 
-		"CustomerById"	{Invoke-RestMethod -Uri "https://app.atera.com/api/v3/customers/$CustomerId" -Headers @{
-					"method"="GET"
-					"scheme"="https"
-  					"accept"="application/json;charset=utf-8,*/*"
-  					"accept-encoding"="gzip, deflate, br, zstd"
-  					"accept-language"="en-US,en;q=0.9"
-  					"x-api-key"="$Key"}
-				}
+				$Call.items | Select-Object @FilteredResults;
 
-		"MachineByName"	{Invoke-RestMethod -Uri "https://app.atera.com/api/v3/agents/machine/$MachineName`?page=$PageNumber&itemsInPage=$ItemAmount" -Headers @{
-					"method"="GET"
-					"scheme"="https"
-  					"accept"="application/json;charset=utf-8,*/*"
-  					"accept-encoding"="gzip, deflate, br, zstd"
-  					"accept-language"="en-US,en;q=0.9"
-  					"x-api-key"="$Key"}
+				$PageItemResults = @{Object =`
+					"Page: $($Call.page)`n",
+					"`bItems in page: $($Call.itemsInPage)`n",
+					"`bTotal item count: $($Call.totalItemCount)`n",
+					"`bTotal pages: $($Call.totalPages)`n";
+					ForegroundColor = "Yellow"};
+
+				Write-Host @PageItemResults;
+			}
+
+		"MachineByName" {$RestParams = @{
+					Uri = "https://app.atera.com/api/v3/agents/machine/$MachineName`?page=$PageNumber&itemsInPage=$ItemAmount";
+					Headers = @{
+						"method"="GET"
+						"scheme"="https"
+  						"accept"="application/json;charset=utf-8,*/*"
+  						"accept-encoding"="gzip, deflate, br, zstd"
+  						"accept-language"="en-US,en;q=0.9"
+  						"x-api-key"="$Key"};
+					ErrorAction = "Stop";}
+
+					try {
+						$Call = Invoke-RestMethod @RestParams;
+						if ($Call.totalItemCount -eq 0) {
+							throw "Machine '$MachineName' was not found."};
+					}
+					catch {
+						$PSCmdlet.ThrowTerminatingError($PSItem);
+					}
+
+					$FilteredResults = @{Property =`
+						"AppViewUrl",
+						"FolderName",
+						"CustomerID",
+						"CustomerName",
+						"AgentName",
+						"MachineName",
+						"Online",
+						"LastSeen",
+						"Processor",
+						"Memory",
+						"Vendor",
+						"VendorSerialNumber",
+						"VendorBrandModel",
+						"BiosManufacturer",
+						"BiosVersion",
+						"BiosReleaseDate",
+						"HardwareDisks",
+						"BatteryInfo",
+						"OS",
+						"LastRebootTime",
+						"OSVersion",
+						"OSBuild",
+						"LastLoginUser"};
+
+					$Call.items | Select-Object @FilteredResults;
 				}
 		  	}
 }

@@ -27,7 +27,7 @@ function Download-AdultSwim {
 		}
 	}
 	catch {
-		$PSCmdlet.ThrowTerminatingError($PSItem)
+		$PSCmdlet.ThrowTerminatingError($PSItem);
 	}
 }
 
