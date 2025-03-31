@@ -94,10 +94,10 @@ function Invoke-AteraApi {
 				$Call.items | Select-Object @FilteredResults;
 
 				$PageItemResults = @{Object =`
-					"Page: $($Call.page)`n",
+					"`nPage: $($Call.page)`n",
 					"`bItems in page: $($Call.itemsInPage)`n",
 					"`bTotal item count: $($Call.totalItemCount)`n",
-					"`bTotal pages: $($Call.totalPages)`n";
+					"`bTotal pages: $($Call.totalPages)";
 					ForegroundColor = "Yellow"};
 
 				Write-Host @PageItemResults;
