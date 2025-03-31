@@ -20,7 +20,8 @@ Import-Module -Global -Name Microsoft.PowerShell.Utility;
 function Download-AdultSwim {
 	param ([Parameter(Mandatory = $true, Position = 0)] [string]$Uri)
 	try {
-		$Links = (Invoke-WebRequest -Uri $Uri).Links.Href | Select-String -Pattern ("$($Uri.Replace('https://www.adultswim.com',''))" + "/[a-z0-9\-]+")
+		$Links = (Invoke-WebRequest -Uri $Uri).Links.Href |
+		Select-String -Pattern ("$($Uri.Replace('https://www.adultswim.com',''))" + "/[a-z0-9\-]+")
 		foreach ($Link in $Links) {
 			yt-dlp "https://www.adultswim.com$Link"
 		}
@@ -41,7 +42,8 @@ function Get-AteraAgents {
 		[switch]$All)
 
 	switch ($All) {
-		$true	{[int]$Pages = (Invoke-RestMethod -Uri "https://app.atera.com/api/v3/agents?page=1&itemsInPage=50" -Headers @{
+		$true	{[int]$Pages = (Invoke-RestMethod -Uri "https://app.atera.com/api/v3/agents?page=1&itemsInPage=50"`
+		-Headers @{
 						"method"="GET"
 						"scheme"="https"
   						"accept"="application/json;charset=utf-8,*/*"
@@ -49,7 +51,8 @@ function Get-AteraAgents {
   						"accept-language"="en-US,en;q=0.9"
   						"x-api-key"="$Key"}).totalPages;
 				for ($i = 1; $i -le $Pages; $i++) {
-					(Invoke-RestMethod -Uri "https://app.atera.com/api/v3/agents?page=$i&itemsInPage=50" -Headers @{
+					(Invoke-RestMethod -Uri "https://app.atera.com/api/v3/agents?page=$i&itemsInPage=50"`
+					-Headers @{
 						"method"="GET"
 						"scheme"="https"
   						"accept"="application/json;charset=utf-8,*/*"
@@ -58,7 +61,8 @@ function Get-AteraAgents {
   						"x-api-key"="$Key"}).items}
 			}
 
-		$false	{(Invoke-RestMethod -Uri "https://app.atera.com/api/v3/agents?page=$PageNumber&itemsInPage=$ItemAmount" -Headers @{
+		$false	{(Invoke-RestMethod -Uri "https://app.atera.com/api/v3/agents?page=$PageNumber&itemsInPage=$ItemAmount"`
+		-Headers @{
 				"method"="GET"
 				"scheme"="https"
   				"accept"="application/json;charset=utf-8,*/*"
