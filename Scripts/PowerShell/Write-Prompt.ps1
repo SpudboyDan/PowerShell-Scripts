@@ -1,4 +1,4 @@
-function private:Prompt-Host
+function private:Write-Prompt
 {
 	param([Parameter(Mandatory = $true, Position = 0)]
 		[string]$Caption,
