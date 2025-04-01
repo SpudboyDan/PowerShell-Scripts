@@ -78,19 +78,6 @@ function Print-Version {
 	$Host.UI.RawUI.WindowTitle = "PowerShell $HostVersion";
 }
 
-function Set-ConsoleColor {
-	param ([Parameter(Mandatory = $true, Position = 0)]
-		[ValidateSet("BackgroundColor", "ForegroundColor")]
-		[string]$Layer,
-		[Parameter(Mandatory = $true, Position = 1)]
-		[ValidateSet("Black", "DarkBlue", "DarkGreen", "DarkCyan",
-		"DarkRed", "DarkMagenta", "DarkYellow", "Gray", "DarkGray",
-		"Blue", "Green", "Cyan", "Red", "Magenta", "Yellow", "White")]
-		[string]$Color)
-
-	[System.Console]::$Layer = "$Color";
-}
-
 function Set-Keybinds {
 	Set-PSReadLineKeyHandler -Chord Shift+F1 -Function ForwardChar;
 	Set-PSReadLineKeyHandler -Chord Shift+F2 -Function ForwardWord;

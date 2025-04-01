@@ -91,13 +91,13 @@ function Invoke-AteraApi {
 					"CustomerID",
 					"CustomerName"};
 
-				$Call.items | Select-Object @FilteredResults;
+				$Call.items | Select-Object @FilteredResults | Sort-Object -Property CustomerName;
 
 				$PageItemResults = @{Object =`
-					"`nPage: $($Call.page)`n",
+					"Page: $($Call.page)`n",
 					"`bItems in page: $($Call.itemsInPage)`n",
 					"`bTotal item count: $($Call.totalItemCount)`n",
-					"`bTotal pages: $($Call.totalPages)";
+					"`bTotal pages: $($Call.totalPages)`n";
 					ForegroundColor = "Yellow"};
 
 				Write-Host @PageItemResults;
