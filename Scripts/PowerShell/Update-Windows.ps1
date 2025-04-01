@@ -1,7 +1,7 @@
-# Force update to Windows 11
+﻿# Force update to Windows 11
 Import-Module $env:SyncroModule
 $jvh = Test-Path -Path C:\temp\jvhconsulting
-if ($jvh -eq $false) {new-item -Path c:\temp\jvhconsulitng}
+if ($jvh -eq $false) { New-Item -Path c:\temp\jvhconsulitng }
 $DebugLog = 'C:\temp\jvhconsulting\Win11Upgrade.log'
 
 #function to get timestamp
@@ -9,7 +9,7 @@ function Get-TimeStamp {
     return "[{0:yyyy/MM/dd} {0:HH:mm:ss}]" -f (Get-Date)
 }
 #Function LogMessages
-    function LogMessage ($msg) {
+function LogMessage ($msg) {
     Add-Content $DebugLog "$(Get-TimeStamp) $msg"
     Write-Host "$(Get-TimeStamp) $msg"
 }
@@ -46,18 +46,14 @@ New-ItemProperty -Path "HKLM:\SYSTEM\Setup\MoSetup" -Name AllowUpgradesWithUnsup
 "BypassTPMCheck"=dword:00000001
 #>
 
-
-
-
 LogMessage "Setting Windows 11 TargetVersion to 23H2"
 New-ItemProperty -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate' -Name TargetReleaseVersion -Value 1 -PropertyType DWORD -Force
 New-ItemProperty -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate' -Name TargetReleaseVersionInfo -Value '23H2' -PropertyType String -Force
 New-ItemProperty -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate' -Name ProductVersion -Value "Windows 11" -PropertyType String -Force
-Get-ItemProperty -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate' |Select-Object TargetReleaseVersion, TargetReleaseVersionInfo, ProductVersion |fl
+Get-ItemProperty -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate' | Select-Object TargetReleaseVersion, TargetReleaseVersionInfo, ProductVersion | Format-List
 
 reg query hklm\software\policies\microsoft\windows\windowsupdate
-restart-service wuauserv -force
-
+Restart-Service wuauserv -Force
 
 <#$HKCU_Desktop = "HKCU:\Control Panel\Desktop"
 New-Item -Path $HKCU_Desktop -Name NewKey
@@ -74,5 +70,5 @@ New-Item -ItemType Directory -Force -Path $workingdir
 }#>
 
 Invoke-WebRequest -Uri $url -OutFile $file
-LogMessage "Starting Winders11 upgrade forcefully"
+LogMessage "Starting Windows 11 upgrade forcefully"
 Start-Process -FilePath $file -ArgumentList "/Install  /MinimizeToTaskBar /QuietInstall /SkipEULA /copylogs $workingdir"

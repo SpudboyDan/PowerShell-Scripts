@@ -1,4 +1,4 @@
-#*================================================================================
+﻿#*================================================================================
 # Copyright © 2025, spudboydan. All rights reserved.
 # Check ThreatLocker Install
 #*================================================================================
@@ -7,12 +7,10 @@
 $service = Get-Service -Name ThreatLockerService -ErrorAction SilentlyContinue;
 
 # Checks for the ThreatLocker Service and throws an error if found.
-if ($service.Name -eq "ThreatLockerService")
-{
-	throw "ThreatLocker is still installed!";
+if ($service.Name -eq "ThreatLockerService") {
+    throw "ThreatLocker is still installed!";
 }
 
-else
-{
-	Write-Host "The ThreatLocker service was not found on $env:COMPUTERNAME.";
+else {
+    Write-Host "The ThreatLocker service was not found on $env:COMPUTERNAME.";
 }
