@@ -23,9 +23,9 @@
                     "accept"          ="application/json;charset=utf-8,*/*"
                     "accept-encoding" ="gzip, deflate, br, zstd"
                     "accept-language" ="en-US,en;q=0.9"
-                    "x-api-key"       ="$Key" 
+                    "x-api-key"       ="$Key"
                 };
-                ErrorAction = "Stop"; 
+                ErrorAction = "Stop";
             }
 
             try {
@@ -68,7 +68,7 @@
                 "`bItems in page: $($Call.itemsInPage)`n",
                 "`bTotal item count: $($Call.totalItemCount)`n",
                 "`bTotal pages: $($Call.totalPages)`n";
-                ForegroundColor         = "Yellow" 
+                ForegroundColor         = "Yellow"
             };
 
             Write-Host @PageItemResults;
@@ -85,7 +85,7 @@
                     "accept-language" ="en-US,en;q=0.9"
                     "x-api-key"       ="$Key"
                 };
-                ErrorAction = "Stop"; 
+                ErrorAction = "Stop";
             }
 
             try {
@@ -97,7 +97,7 @@
 
             $FilteredResults = @{Property =`
                 "CustomerID",
-                "CustomerName" 
+                "CustomerName"
             };
 
             $Call.items | Select-Object @FilteredResults | Sort-Object -Property CustomerName;
@@ -107,7 +107,7 @@
                 "`bItems in page: $($Call.itemsInPage)`n",
                 "`bTotal item count: $($Call.totalItemCount)`n",
                 "`bTotal pages: $($Call.totalPages)`n";
-                ForegroundColor         = "Yellow" 
+                ForegroundColor         = "Yellow"
             };
 
             Write-Host @PageItemResults;
@@ -122,9 +122,9 @@
                     "accept"          ="application/json;charset=utf-8,*/*"
                     "accept-encoding" ="gzip, deflate, br, zstd"
                     "accept-language" ="en-US,en;q=0.9"
-                    "x-api-key"       ="$Key" 
+                    "x-api-key"       ="$Key"
                 };
-                ErrorAction = "Stop"; 
+                ErrorAction = "Stop";
             }
 
             try {
@@ -160,7 +160,7 @@
                 "LastRebootTime",
                 "OSVersion",
                 "OSBuild",
-                "LastLoginUser" 
+                "LastLoginUser"
             };
 
             $Call.items | Select-Object @FilteredResults;
@@ -170,7 +170,7 @@
                 "`bItems in page: $($Call.itemsInPage)`n",
                 "`bTotal item count: $($Call.totalItemCount)`n",
                 "`bTotal pages: $($Call.totalPages)`n";
-                ForegroundColor         = "Yellow" 
+                ForegroundColor         = "Yellow"
             };
 
             Write-Host @PageItemResults;
@@ -185,7 +185,7 @@
                     "accept"          ="application/json;charset=utf-8,*/*"
                     "accept-encoding" ="gzip, deflate, br, zstd"
                     "accept-language" ="en-US,en;q=0.9"
-                    "x-api-key"       ="$Key" 
+                    "x-api-key"       ="$Key"
                 };
                 ErrorAction = "Stop";
             }
@@ -193,7 +193,7 @@
             try {
                 $Call = Invoke-RestMethod @RestParams;
                 if ($Call.totalItemCount -eq 0) {
-                    throw "Machine '$MachineName' was not found." 
+                    throw "Machine '$MachineName' was not found."
                 };
             }
             catch {
@@ -223,7 +223,7 @@
                 "LastRebootTime",
                 "OSVersion",
                 "OSBuild",
-                "LastLoginUser" 
+                "LastLoginUser"
             };
 
             $Call.items | Select-Object @FilteredResults;

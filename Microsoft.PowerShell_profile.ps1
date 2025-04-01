@@ -1,21 +1,22 @@
-#*================================================================================
+﻿#*================================================================================
 # Copyright © 2025, spudboydan. All rights reserved.
 # Profile
 # ================================================================================
 # Functions
-#	Download-AdultSwim
-#	Get-AteraAgents
+#	Get-ASVideo
+#	Get-AteraAgent
 # 	Get-DuplicatesV3
 # 	Invoke-AteraApi
 # 	Print-Version
 # 	Set-ConsoleColor
-# 	Set-Keybinds
+# 	Set-Keybind
+# 	Write-Version
 #
 # Load profile and dependencies
 # ================================================================================
 . "$PSScriptRoot\Setup Environment.ps1";
 #*================================================================================
 
-Print-Version;
-Set-Keybinds;
+Write-Version;
+Set-Keybind;
 Write-Host -ForegroundColor Cyan -Message "Welcome back, Lane";

@@ -1,23 +1,23 @@
-#*================================================================================
+﻿#*================================================================================
 # Copyright © 2025, spudboydan. All rights reserved.
 # Profile setup and utilities
 # ================================================================================
 # Functions
-#	Download-AdultSwim
-#	Get-AteraAgents
-# 	Get-DuplicatesV3
+#	Get-ASVideo
+#	Get-AteraAgent
+#	Find-DuplicateFile
 # 	Invoke-AteraApi
-# 	Print-Version
+# 	Write-Version
 # 	Set-ConsoleColor
-# 	Set-Keybinds
+# 	Set-Keybind
 #
 # Load dependencies
 # ================================================================================
 Import-Module -Global -Name Microsoft.PowerShell.Utility;
-. "$PSScriptRoot\Modules\Get-Duplicates.ps1";
+. "$PSScriptRoot\Modules\Find-DuplicateFile.ps1";
 . "$PSScriptRoot\Modules\Invoke-AteraApi.ps1";
 #*================================================================================
-function Download-AdultSwim {
+function Get-ASVideo {
 	param ([Parameter(Mandatory = $true, Position = 0)] [string]$Uri)
 	try {
 		$Links = (Invoke-WebRequest -Uri $Uri).Links.Href |
@@ -31,7 +31,7 @@ function Download-AdultSwim {
 	}
 }
 
-function Get-AteraAgents {
+function Get-AteraAgent {
 	param ([parameter(Mandatory = $true, Position = 0)]
 		[string]$Key,
 		[parameter(Mandatory = $false, Position = 1)]
@@ -73,12 +73,13 @@ function Get-AteraAgents {
 	}
 }
 
-function Print-Version {
+function Write-Version {
   	$HostVersion = "$($Host.Version.Major)`.$($Host.Version.Minor)";
 	$Host.UI.RawUI.WindowTitle = "PowerShell $HostVersion";
 }
 
-function Set-Keybinds {
+function Set-Keybind {
 	Set-PSReadLineKeyHandler -Chord Shift+F1 -Function ForwardChar;
 	Set-PSReadLineKeyHandler -Chord Shift+F2 -Function ForwardWord;
 }
+
