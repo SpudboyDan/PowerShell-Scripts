@@ -21,9 +21,9 @@ function private:Write-Prompt {
         [Parameter(Mandatory = $false, Position = 6)]
         [int]$DefaultChoice = (-1))
 
-    $private:Choices = [System.Collections.ObjectModel.Collection[System.Management.Automation.Host.ChoiceDescription]]@(
-        [System.Management.Automation.Host.ChoiceDescription]::new([string]"&$LabelA", [string]"$HelpA")
-        [System.Management.Automation.Host.ChoiceDescription]::new([string]"&$LabelB", [string]"$HelpB"));
+    $private:Choices = [Collections.ObjectModel.Collection[Management.Automation.Host.ChoiceDescription]]@(
+        [Management.Automation.Host.ChoiceDescription]::new([string]"&$LabelA", [string]"$HelpA")
+        [Management.Automation.Host.ChoiceDescription]::new([string]"&$LabelB", [string]"$HelpB"));
 
     $Host.UI.PromptForChoice($Caption, $Message, $Choices, $DefaultChoice);
 }
@@ -34,7 +34,7 @@ if ($null -ne $PSStyle) {
     $PSStyle.Progress.View = 'Classic';
 }
 
-$AppxWhitelist = [System.Collections.Generic.List[string]]@(
+$AppxWhitelist = [Collections.Generic.List[string]]@(
     "Microsoft.ApplicationCompatibilityEnhancements",
     "Microsoft.AV1VideoExtension",
     "Microsoft.AVCEncoderVideoExtension",
@@ -76,8 +76,12 @@ $AppxWhitelist = [System.Collections.Generic.List[string]]@(
     "NVIDIACorp.NVIDIAControlPanel",
     "RealtekSemiconductorCorp.RealtekAudioControl");
 
-$AppxBlacklist = [System.Collections.Generic.List[object]]@((Get-AppxPackage -AllUsers).Where({ $_.Name -notin $AppxWhitelist -and $_.IsFramework -eq $false -and $_.NonRemovable -eq $false }));
-$AppxProvisionedBlacklist = [System.Collections.Generic.List[object]]@((Get-AppxProvisionedPackage -Online).Where({ $_.DisplayName -notin $AppxWhitelist }));
+$AppxBlacklist = [Collections.Generic.List[object]]@((Get-AppxPackage -AllUsers).Where({`
+$_.Name -notin $AppxWhitelist -and $_.IsFramework -eq $false -and $_.NonRemovable -eq $false }));
+
+$AppxProvisionedBlacklist = [Collections.Generic.List[object]]@((Get-AppxProvisionedPackage -Online).Where({`
+$_.DisplayName -notin $AppxWhitelist }));
+
 $WritePromptParams = @{
     Message = "`nAre you sure?";
     LabelA  = "Yes";
@@ -106,8 +110,8 @@ try {
 
             { $Answer -notin ($AppxProvisionedBlacklist.DisplayName) } {
                 Write-Host -ForegroundColor Yellow "'$Answer' does not match the name of any apps. It might not be targeted for removal already. Press enter to continue...";
-                [System.Console]::ReadLine();
-                [System.Console]::Clear();
+                [Console]::ReadLine();
+                [Console]::Clear();
                 break NotMatchBlacklist;
             }
         }
@@ -119,27 +123,27 @@ catch {
 }
 
 try {
-    [System.Console]::Clear();
-    [System.Console]::ForegroundColor = 'Cyan';
-    while ((Write-Prompt -Caption "The following apps will be removed:`n`n$(([System.Collections.Generic.SortedSet[string]]$AppxBlacklist.Name) -join "`n")" @WritePromptParams) -eq 1) {
+    [Console]::Clear();
+    [Console]::ForegroundColor = 'Cyan';
+    while ((Write-Prompt -Caption "The following apps will be removed:`n`n$(([Collections.Generic.SortedSet[string]]$AppxBlacklist.Name) -join "`n")" @WritePromptParams) -eq 1) {
         :NotMatchBlacklist switch ($Answer = Read-Host -Prompt "`nPlease add any apps you do not want removed") {
             { $Answer -in ($AppxBlacklist.Name) -and $Answer -in ($AppxProvisionedBlacklist.DisplayName) } {
                 $null = $AppxBlacklist.RemoveAt([array]::IndexOf($AppxBlacklist.Name, ($AppxBlacklist.Name -match $Answer)[0]));
                 $null = $AppxProvisionedBlacklist.RemoveAt([array]::IndexOf($AppxProvisionedBlacklist.DisplayName, ($AppxProvisionedBlacklist.DisplayName -match $Answer)[0]));
-                [System.Console]::Clear();
+                [Console]::Clear();
                 continue; 
             }
 
             { $Answer -in ($AppxBlacklist.Name) } {
                 $null = $AppxBlacklist.RemoveAt([array]::IndexOf($AppxBlacklist.Name, ($AppxBlacklist.Name -match $Answer)[0]));
-                [System.Console]::Clear();
+                [Console]::Clear();
                 continue; 
             }
 
             { $Answer -notin ($AppxBlacklist.Name) } {
                 Write-Host -ForegroundColor Yellow "'$Answer' does not match the name of any apps. It might not be targeted for removal already. Press enter to continue...";
-                [System.Console]::ReadLine();
-                [System.Console]::Clear();
+                [Console]::ReadLine();
+                [Console]::Clear();
                 break NotMatchBlacklist; 
             }
         }
@@ -150,13 +154,13 @@ catch {
     throw $Error;
 }
 
-[System.Console]::Clear();
+[Console]::Clear();
 $Counter = 0;
 $PercentCounter = 0;
 
 foreach ($App in $AppxProvisionedBlacklist) {
-    $PaddingLength = [System.Math]::Round(([System.Console]::BufferWidth - $App.DisplayName.Length) / 2, [System.MidpointRounding]::ToZero);
-    $RemovalStatus = "Removing Provisioned Apps $([System.Math]::Round(($PercentCounter++/$AppxProvisionedBlacklist.Count)*100))%";
+    $PaddingLength = [Math]::Floor(([Console]::BufferWidth - $App.DisplayName.Length) / 2);
+    $RemovalStatus = "Removing Provisioned Apps $([Math]::Floor(($PercentCounter++/$AppxProvisionedBlacklist.Count)*100))%";
     $AppNameActivity = "$($App.DisplayName.PadLeft($PaddingLength + $App.DisplayName.Length, 0x0020))";
     Write-Progress -Activity $AppNameActivity -Status $RemovalStatus -PercentComplete (($Counter++ / $AppxProvisionedBlacklist.Count) * 100);
     Start-Sleep -Seconds 1;
@@ -169,8 +173,8 @@ $Counter = 0;
 $PercentCounter = 0;
 
 foreach ($App in $AppxBlacklist) {
-    $PaddingLength = [System.Math]::Round(([System.Console]::BufferWidth - $App.Name.Length) / 2, [System.MidpointRounding]::ToZero);
-    $RemovalStatus = "Removing Apps $([System.Math]::Round(($PercentCounter++/$AppxBlacklist.Count)*100))%";
+    $PaddingLength = [Math]::Floor(([Console]::BufferWidth - $App.Name.Length) / 2);
+    $RemovalStatus = "Removing Apps $([Math]::Floor(($PercentCounter++/$AppxBlacklist.Count)*100))%";
     $AppNameActivity = "$($App.Name.PadLeft($PaddingLength + $App.Name.Length, 0x0020))";
     Write-Progress -Activity $AppNameActivity -Status $RemovalStatus -PercentComplete (($Counter++ / $AppxBlacklist.Count) * 100);
     Start-Sleep -Seconds 1;

@@ -16,7 +16,6 @@
 # ================================================================================
 . "$PSScriptRoot\Setup Environment.ps1";
 #*================================================================================
-
 Write-Version;
 Set-Keybind;
 Write-Host -ForegroundColor Cyan -Message "Welcome back, Lane";
