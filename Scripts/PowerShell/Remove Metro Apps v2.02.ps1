@@ -77,17 +77,17 @@ $AppxWhitelist = [Collections.Generic.List[string]]@(
     "RealtekSemiconductorCorp.RealtekAudioControl");
 
 $AppxBlacklist = [Collections.Generic.List[object]]@((Get-AppxPackage -AllUsers).Where({`
-$_.Name -notin $AppxWhitelist -and $_.IsFramework -eq $false -and $_.NonRemovable -eq $false }));
+                $_.Name -notin $AppxWhitelist -and $_.IsFramework -eq $false -and $_.NonRemovable -eq $false }));
 
 $AppxProvisionedBlacklist = [Collections.Generic.List[object]]@((Get-AppxProvisionedPackage -Online).Where({`
-$_.DisplayName -notin $AppxWhitelist }));
+                $_.DisplayName -notin $AppxWhitelist }));
 
 $WritePromptParams = @{
     Message = "`nAre you sure?";
     LabelA  = "Yes";
     HelpA   = "Remove apps";
     LabelB  = "No";
-    HelpB   = "Do not remove apps"; 
+    HelpB   = "Do not remove apps";
 }
 
 try {
@@ -99,7 +99,7 @@ try {
                 $null = $AppxProvisionedBlacklist.RemoveAt([array]::IndexOf($AppxProvisionedBlacklist.DisplayName, ($AppxProvisionedBlacklist.DisplayName -match $Answer)[0]));
                 $null = $AppxBlacklist.RemoveAt([array]::IndexOf($AppxBlacklist.Name, ($AppxBlacklist.Name -match $Answer)[0]));
                 [System.Console]::Clear();
-                continue; 
+                continue;
             }
 
             { $Answer -in ($AppxProvisionedBlacklist.DisplayName) } {
@@ -131,20 +131,20 @@ try {
                 $null = $AppxBlacklist.RemoveAt([array]::IndexOf($AppxBlacklist.Name, ($AppxBlacklist.Name -match $Answer)[0]));
                 $null = $AppxProvisionedBlacklist.RemoveAt([array]::IndexOf($AppxProvisionedBlacklist.DisplayName, ($AppxProvisionedBlacklist.DisplayName -match $Answer)[0]));
                 [Console]::Clear();
-                continue; 
+                continue;
             }
 
             { $Answer -in ($AppxBlacklist.Name) } {
                 $null = $AppxBlacklist.RemoveAt([array]::IndexOf($AppxBlacklist.Name, ($AppxBlacklist.Name -match $Answer)[0]));
                 [Console]::Clear();
-                continue; 
+                continue;
             }
 
             { $Answer -notin ($AppxBlacklist.Name) } {
                 Write-Host -ForegroundColor Yellow "'$Answer' does not match the name of any apps. It might not be targeted for removal already. Press enter to continue...";
                 [Console]::ReadLine();
                 [Console]::Clear();
-                break NotMatchBlacklist; 
+                break NotMatchBlacklist;
             }
         }
     }
