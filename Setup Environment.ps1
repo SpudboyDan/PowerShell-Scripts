@@ -3,13 +3,12 @@
 # Profile setup and utilities
 # ================================================================================
 # Functions
+#	Find-DuplicateFile
 #	Get-ASVideo
 #	Get-AteraAgent
-#	Find-DuplicateFile
 # 	Invoke-AteraApi
-# 	Write-Version
-# 	Set-ConsoleColor
 # 	Set-Keybind
+# 	Write-Version
 #
 # Load dependencies
 # ================================================================================
@@ -32,12 +31,12 @@ function Get-ASVideo {
 	}
 }
 
-function Write-Version {
-  	$HostVersion = "$($Host.Version.Major)`.$($Host.Version.Minor)";
-	$Host.UI.RawUI.WindowTitle = "PowerShell $HostVersion";
-}
-
 function Set-Keybind {
 	Set-PSReadLineKeyHandler -Chord Shift+F1 -Function ForwardChar;
 	Set-PSReadLineKeyHandler -Chord Shift+F2 -Function ForwardWord;
+}
+
+function Write-Version {
+  	$HostVersion = "$($Host.Version.Major)`.$($Host.Version.Minor)";
+	$Host.UI.RawUI.WindowTitle = "PowerShell $HostVersion";
 }
