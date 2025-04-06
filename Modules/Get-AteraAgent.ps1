@@ -4,9 +4,9 @@
         [parameter(Mandatory = $false, Position = 1)]
         [switch]$All,
         [parameter(Mandatory = $false, Position = 2)]
-        [int]$PageNumber = 1,
+        [string]$PageNumber = '1',
         [parameter(Mandatory = $false, Position = 3)]
-        [int]$ItemAmount = 20)
+        [string]$ItemAmount = '20')
 
     $FilteredResults = @{Property =`
         "AppViewUrl",
