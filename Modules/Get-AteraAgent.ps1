@@ -6,7 +6,7 @@
         [switch]$All,
 	[Parameter(Mandatory = $false, Position = 2)]
 	[ValidateNotNull()]
-	[long]$CustomerID,
+	[long]$CustomerID = 0,
         [Parameter(Mandatory = $false, Position = 3)]
         [int]$PageNumber = 1,
         [Parameter(Mandatory = $false, Position = 4)]
@@ -54,7 +54,7 @@
                 ErrorAction = "Stop";
             }
             [long]$TotalPages = (Invoke-RestMethod @FirstCallParams).totalPages
-    
+   
             for ([long]$Index = 1; $Index -le $TotalPages; $Index++) {
                 [string]$Uri = "https://app.atera.com/api/v3/agents?page=$Index&itemsInPage=50";
                 $RestParams = @{

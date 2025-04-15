@@ -6,7 +6,7 @@
 #	Find-DuplicateFile
 #	Get-ASVideo
 #	Get-AteraAgent
-# 	Invoke-AteraApi
+#	Get-AteraCustomer
 # 	Set-Keybind
 # 	Write-Version
 #
@@ -14,8 +14,8 @@
 # ================================================================================
 Import-Module -Global -Name Microsoft.PowerShell.Utility;
 . "$PSScriptRoot\Modules\Find-DuplicateFile.ps1";
-. "$PSScriptRoot\Modules\Invoke-AteraApi.ps1";
 . "$PSScriptRoot\Modules\Get-AteraAgent.ps1";
+. "$PSScriptRoot\Modules\Get-AteraCustomer.ps1";
 #*================================================================================
 function Get-ASVideo {
 	param ([Parameter(Mandatory = $true, Position = 0)] [string]$Uri)
