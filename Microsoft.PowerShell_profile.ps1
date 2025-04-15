@@ -18,4 +18,4 @@
 #*================================================================================
 Write-Version;
 Set-Keybind;
-Write-Host -ForegroundColor Cyan -Message "Welcome back, Lane";
+Write-Host -ForegroundColor Yellow -Message "Welcome back, Lane";
