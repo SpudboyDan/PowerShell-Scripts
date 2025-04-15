@@ -1,12 +1,16 @@
 ﻿function Get-AteraAgent {
-    param ([parameter(Mandatory = $true, Position = 0)]
+	[CmdletBinding()]
+    param ([Parameter(Mandatory = $true, Position = 0)]
         [string]$ApiKey,
-        [parameter(Mandatory = $false, Position = 1)]
+        [Parameter(Mandatory = $false, Position = 1)]
         [switch]$All,
-        [parameter(Mandatory = $false, Position = 2)]
-        [string]$PageNumber = '1',
-        [parameter(Mandatory = $false, Position = 3)]
-        [string]$ItemAmount = '20')
+	[Parameter(Mandatory = $false, Position = 2)]
+	[ValidateNotNull()]
+	[long]$CustomerID,
+        [Parameter(Mandatory = $false, Position = 3)]
+        [int]$PageNumber = 1,
+        [Parameter(Mandatory = $false, Position = 4)]
+        [int]$ItemAmount = 20)
 
     $FilteredResults = @{Property =`
         "AppViewUrl",
@@ -70,7 +74,7 @@
             }
         }
         $false {
-            [string]$Uri = "https://app.atera.com/api/v3/agents?page=$PageNumber&itemsInPage=$ItemAmount";
+            [string]$Uri = "https://app.atera.com/api/v3/agents/customer/$CustomerId`?page=$PageNumber&itemsInPage=$ItemAmount";
             $RestParams = @{
                 Uri         = $Uri;
                 Headers     = @{
@@ -83,7 +87,23 @@
                 };
                 ErrorAction = "Stop";
             }
-            (Invoke-RestMethod @RestParams).items | Select-Object @FilteredResults;
+	    try {
+            $Call = Invoke-RestMethod @RestParams;
+	    }
+	    catch {
+		    $PSCmdlet.ThrowTerminatingError($PSItem);
+	    }
+
+	    $Call.items | Select-Object @FilteredResults;
+	    $PageItemResults = @{Object =`
+                "Page: $($Call.page)`n",
+                "`bItems in page: $($Call.itemsInPage)`n",
+                "`bTotal item count: $($Call.totalItemCount)`n",
+                "`bTotal pages: $($Call.totalPages)`n";
+                ForegroundColor         = "Yellow"
+	    };
+
+	    Write-Host @PageItemResults;
         }
     }
 }
