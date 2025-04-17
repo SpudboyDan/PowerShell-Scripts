@@ -1,7 +1,7 @@
 ﻿using namespace System;
 using namespace System.Collections.Generic;
 using namespace System.Security.Cryptography;
-using assembly "C:\Program Files\PackageManagement\NuGet\Packages\System.IO.Hashing.9.0.3\lib\net9.0\System.IO.Hashing.dll";
+using assembly System.IO.Hashing.dll;
 
 class TinyHashInfo : Microsoft.PowerShell.Commands.FileHashInfo {
     # Class properties
