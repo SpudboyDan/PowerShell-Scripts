@@ -2,4 +2,5 @@ Help/**
 Modules/Microsoft.PowerToys.Configure/**
 Modules/Microsoft.PowerShell.SecretStore/**
 Modules/Microsoft.PowerShell.SecretManagement/**
+Modules/Microsoft.WinGet.Client/**
 Modules/PSScriptAnalyzer/**
