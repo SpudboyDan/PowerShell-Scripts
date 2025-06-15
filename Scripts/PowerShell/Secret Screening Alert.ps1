@@ -5,7 +5,7 @@
 # Functions
 # 	Send-ScreeningAlert
 #*================================================================================
-
+https://drafthouse.com/dfw/event/secret-screening-125
 # Sends mail to my personal email via smtp2go email server.
 function Send-ScreeningAlert {
     # Parameters for Send-MailMessage
@@ -21,9 +21,9 @@ function Send-ScreeningAlert {
 }
 
 # Declare variables.
-[int32]$ScreeningNumber = 125;
+[int32]$ScreeningNumber = 126;
 $RestParams = @{
-    Uri         = "https://drafthouse.com/s/mother/v2/schedule/presentation/dfw/special-event-secret-screening-$ScreeningNumber";
+    Uri         = "https://drafthouse.com/s/mother/v2/schedule/presentation/dfw/secret-screening-$ScreeningNumber";
     ErrorAction = "Stop"
 };
 $ScreeningRequest = (Invoke-RestMethod @RestParams).data.sessions.status;
