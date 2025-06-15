@@ -1,4 +1,4 @@
-﻿function Get-AteraAgent {
+function Get-AteraAgent {
     [CmdletBinding()]
     param ([Parameter(Mandatory = $true, Position = 0)]
         [string]$ApiKey,
@@ -6,41 +6,26 @@
         [switch]$All,
         [Parameter(Mandatory = $false, Position = 2)]
         [ValidateNotNull()]
-        [long]$CustomerID,
+        [long]$CustomerID = 0,
         [Parameter(Mandatory = $false, Position = 3)]
         [int]$PageNumber = 1,
         [Parameter(Mandatory = $false, Position = 4)]
         [int]$ItemAmount = 20)
 
     $FilteredResults = @{Property =`
-        "AppViewUrl",
-        "FolderName",
         "CustomerID",
         "CustomerName",
         "AgentName",
         "MachineName",
         "Online",
-        "LastSeen",
         "Processor",
         "Memory",
-        "Vendor",
-        "VendorSerialNumber",
-        "VendorBrandModel",
-        "BiosManufacturer",
-        "BiosVersion",
-        "BiosReleaseDate",
         "HardwareDisks",
-        "BatteryInfo",
         "OS",
-        "LastRebootTime",
-        "OSVersion",
-        "OSBuild",
-        "LastLoginUser"
     };
 
     switch ($All) {
         $true {
-	<#
             if ($null -ne $CustomerId) {
                 [string]$Uri = "https://app.atera.com/api/v3/agents/customer/$CustomerId`?page=1&itemsInPage=50";
                 $FirstCallParams = @{
@@ -76,7 +61,6 @@
                 }
             }
             else {
-	#>
                 [string]$Uri = "https://app.atera.com/api/v3/agents?page=1&itemsInPage=50";
                 $FirstCallParams = @{
                     Uri         = $Uri;
@@ -110,6 +94,7 @@
                     (Invoke-RestMethod @RestParams).items | Select-Object @FilteredResults;
                 }
             }
+        }
 
         $false {
             [string]$Uri = "https://app.atera.com/api/v3/agents/customer/$CustomerId`?page=$PageNumber&itemsInPage=$ItemAmount";
@@ -142,6 +127,6 @@
             };
 
             Write-Host @PageItemResults;
-	}
+        }
     }
 }
