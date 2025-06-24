@@ -4,7 +4,7 @@
 # ================================================================================
 # Functions
 #	Find-DuplicateFile
-#	Get-ASVideo
+#	Get-AdultSwimVideo
 #	Get-AteraAgent
 #	Get-AteraCustomer
 # 	Set-Keybind
@@ -18,7 +18,7 @@ Import-Module -Global -Name Microsoft.PowerShell.Utility;
 . "$PSScriptRoot\Modules\Get-AteraCustomer.ps1";
 . "$PSScriptRoot\Modules\Get-KHInsiderMP3.ps1";
 #*================================================================================
-function Get-ASVideo {
+function Get-AdultSwimVideo {
 	param ([Parameter(Mandatory = $true, Position = 0)] [string]$Uri)
 	try {
 		$Links = (Invoke-WebRequest -Uri $Uri).Links.Href |
