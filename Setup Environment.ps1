@@ -7,6 +7,7 @@
 #	Get-AdultSwimVideo
 #	Get-AteraAgent
 #	Get-AteraCustomer
+#	Get-KHInsiderMP3
 # 	Set-Keybind
 # 	Write-Version
 #
