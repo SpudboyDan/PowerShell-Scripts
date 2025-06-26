@@ -38,13 +38,13 @@ function Invoke-LightSwitch {
         (Set-ItemProperty -Path HKCU:\SoftWare\Microsoft\Windows\CurrentVersion\Themes\Personalize -Name AppsUseLightTheme -Type DWord -Value 1) 
     }
 
-    TASKKILL /F /IM explorer.exe 
-    TASKKILL /F /IM sihost.exe;
+    $SihostId = Get-Process -Name sihost;
+    Stop-Process -Id $SihostId.Id;
     
     if ($TotalCommanderId = Get-Process -Name TOTALCMD64 -ErrorAction Ignore) {
 	    Stop-Process -Id $TotalCommanderId.Id -ErrorAction Ignore; Start-Process -FilePath C:\Util.w\Wincmd\TOTALCMD64.EXE}
 
-    Start-Sleep -Seconds 30;
+    Start-Sleep -Seconds 10;
     Write-Host -ForegroundColor Cyan "Successfully Changed Themes";
-    Start-Sleep -Seconds 1.5;
+    Start-Sleep -Seconds 5;
 }
