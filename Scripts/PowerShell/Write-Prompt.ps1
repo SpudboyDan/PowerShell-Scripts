@@ -49,6 +49,16 @@
 	[Management.Automation.Host.ChoiceDescription]::new([string]"&$Label32", [string]"$Help32"));
 	[Management.Automation.Host.ChoiceDescription]::new([string]"&$Label33", [string]"$Help33"));
 	[Management.Automation.Host.ChoiceDescription]::new([string]"&$Label34", [string]"$Help34"));
-
+	[Management.Automation.Host.ChoiceDescription]::new([string]"&$Label35", [string]"$Help35"));
+	[Management.Automation.Host.ChoiceDescription]::new([string]"&$Label36", [string]"$Help36"));
+	[Management.Automation.Host.ChoiceDescription]::new([string]"&$Label37", [string]"$Help37"));
+	[Management.Automation.Host.ChoiceDescription]::new([string]"&$Label38", [string]"$Help38"));
+	[Management.Automation.Host.ChoiceDescription]::new([string]"&$Label39", [string]"$Help39"));
+	[Management.Automation.Host.ChoiceDescription]::new([string]"&$Label40", [string]"$Help40"));
+	[Management.Automation.Host.ChoiceDescription]::new([string]"&$Label41", [string]"$Help41"));
+	[Management.Automation.Host.ChoiceDescription]::new([string]"&$Label42", [string]"$Help42"));
+	[Management.Automation.Host.ChoiceDescription]::new([string]"&$Label43", [string]"$Help43"));
+	[Management.Automation.Host.ChoiceDescription]::new([string]"&$Label44", [string]"$Help44"));
+	[Management.Automation.Host.ChoiceDescription]::new([string]"&$Label45", [string]"$Help45"));
     $Host.UI.PromptForChoice($Caption, $Message, $Choices, $DefaultChoice);
 }
