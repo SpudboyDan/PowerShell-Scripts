@@ -1,0 +1,5 @@
+First, mount a freshly downloaded and up-to-date Windows ISO (don't forget to check the file hash!).
+Windows typically mounts it as a special CD/DVD Optical Drive, and appears as such inside of File Explorer.
+For this example, we assume the image was mounted and assigned to drive letter 'D'.
+
+DISM /ONLINE /CLEANUP-IMAGE /RESTOREHEALTH /SOURCE:WIM:D:\sources\install.wim:1 /LIMITACCESS
