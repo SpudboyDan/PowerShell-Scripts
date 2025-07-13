@@ -1,0 +1,7 @@
+Help/**
+Modules/Carbon.Registry/**
+Modules/Microsoft.PowerShell.SecretManagement/**
+Modules/Microsoft.PowerShell.SecretStore/**
+Modules/Microsoft.PowerToys.Configure/**
+Modules/Microsoft.WinGet.Client/**
+Modules/PSScriptAnalyzer/**
