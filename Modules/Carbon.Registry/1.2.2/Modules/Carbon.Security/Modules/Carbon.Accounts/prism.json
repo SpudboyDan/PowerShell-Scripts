@@ -1,8 +1,0 @@
-{
-  "PSModules": [
-    {
-      "Name": "PureInvoke",
-      "Version": "1.*"
-    }
-  ]
-}

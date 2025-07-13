@@ -1,8 +1,0 @@
-{
-	"PSModules": [
-    {
-      "Name": "Carbon.Security",
-      "Version": "1.*"
-    }
-	]
-}
