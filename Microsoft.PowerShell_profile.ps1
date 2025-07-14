@@ -3,13 +3,12 @@
 # Profile
 # ================================================================================
 # Functions
+# 	Find-DuplicateFile
 #	Get-AdultSwimVideo
 #	Get-AteraAgent
-# 	Get-DuplicatesV3
-# 	Invoke-AteraApi
+#	Get-AteraCustomer
 # 	Invoke-LightSwitch
-# 	Print-Version
-# 	Set-ConsoleColor
+# 	New-StartShortcut
 # 	Set-Keybind
 # 	Write-Version
 #

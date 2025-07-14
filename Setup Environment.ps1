@@ -8,6 +8,7 @@
 #	Get-AteraAgent
 #	Get-AteraCustomer
 #	Get-KHInsiderMP3
+#	New-StartShortcut
 # 	Set-Keybind
 # 	Write-Version
 #
@@ -18,6 +19,7 @@ Import-Module -Global -Name Microsoft.PowerShell.Utility;
 . "$PSScriptRoot\Modules\Get-AteraAgent.ps1";
 . "$PSScriptRoot\Modules\Get-AteraCustomer.ps1";
 . "$PSScriptRoot\Modules\Get-KHInsiderMP3.ps1";
+. "$PSScriptRoot\Modules\New-StartShortcut.ps1";
 #*================================================================================
 function Get-AdultSwimVideo {
 	param ([Parameter(Mandatory = $true, Position = 0)] [string]$Uri)
