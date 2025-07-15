@@ -22,7 +22,7 @@ function Send-ScreeningAlert {
 
 # Declare variables.
 $RestParams = @{
-    Uri         = "https://drafthouse.com/s/mother/v2/schedule/presentation/dfw/dismember-the-alamo-2025";
+    Uri         = "https://drafthouse.com/s/mother/v2/schedule/presentation/dfw/agfa-presents-dismember-the-alamo-2025";
     ErrorAction = "Stop"
 };
 

@@ -20,7 +20,7 @@ Write-Version;
 Set-Keybind;
 Write-Host -ForegroundColor Yellow -Message "Welcome back, Lane";
 
-function Invoke-LightSwitch {
+function Private:Invoke-LightSwitch {
     if ((Get-ItemProperty -Path HKCU:\SoftWare\Microsoft\Windows\CurrentVersion\Themes\Personalize).SystemUsesLightTheme -eq 1) {
         (Set-ItemProperty -Path HKCU:\SoftWare\Microsoft\Windows\CurrentVersion\Themes\Personalize -Name SystemUsesLightTheme -Type DWord -Value 0)
     }
