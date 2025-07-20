@@ -7,6 +7,7 @@
 #	Get-AdultSwimVideo
 #	Get-AteraAgent
 #	Get-AteraCustomer
+#	Get-KHInsiderMP3
 # 	Invoke-LightSwitch
 # 	New-StartShortcut
 # 	Set-Keybind
@@ -18,7 +19,7 @@
 #*================================================================================
 Write-Version;
 Set-Keybind;
-Write-Host -ForegroundColor Yellow -Message "Welcome back, Lane";
+Write-Host -ForegroundColor Cyan -Message "Welcome back, Lane";
 
 function Private:Invoke-LightSwitch {
     if ((Get-ItemProperty -Path HKCU:\SoftWare\Microsoft\Windows\CurrentVersion\Themes\Personalize).SystemUsesLightTheme -eq 1) {

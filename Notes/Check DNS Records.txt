@@ -1,0 +1,1 @@
+nslookup -type=any example.com
