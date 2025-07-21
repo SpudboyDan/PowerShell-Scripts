@@ -13,13 +13,23 @@
 # 	Set-Keybind
 # 	Write-Version
 #
-# Load profile and dependencies
+# Load Modules
 # ================================================================================
-. "$PSScriptRoot\Setup Environment.ps1";
+Import-Module -Global -Name Microsoft.PowerShell.Utility;
+Import-Module -Name AdultSwimVideo;
+Import-Module -Name DuplicateFileFinder;
+Import-Module -Name KHInsider;
+Import-Module -Name PSAtera;
+Import-Module -Name StartShortcut;
 #*================================================================================
-Write-Version;
-Set-Keybind;
 Write-Host -ForegroundColor Cyan -Message "Welcome back, Lane";
+
+function Private:Set-Keybind {
+	Set-PSReadLineKeyHandler -Chord Shift+F1 -Function ForwardChar;
+	Set-PSReadLineKeyHandler -Chord Shift+F2 -Function ForwardWord;
+}
+
+Set-Keybind;
 
 function Private:Invoke-LightSwitch {
     if ((Get-ItemProperty -Path HKCU:\SoftWare\Microsoft\Windows\CurrentVersion\Themes\Personalize).SystemUsesLightTheme -eq 1) {
