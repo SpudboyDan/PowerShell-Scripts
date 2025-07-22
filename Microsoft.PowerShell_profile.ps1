@@ -55,6 +55,6 @@ function Private:Invoke-LightSwitch {
 	    Stop-Process -Id $TotalCommanderId.Id -ErrorAction Ignore; Start-Process -FilePath C:\Util.w\Wincmd\TOTALCMD64.EXE}
 
     Start-Sleep -Seconds 30;
-    Write-Host -ForegroundColor Cyan "Successfully Changed Themes";
+    Write-Host -ForegroundColor Yellow "Successfully Changed Themes";
     Start-Sleep -Seconds 5;
 }
