@@ -86,6 +86,7 @@ $AppxBlacklist = [Collections.Generic.List[object]]@((Get-AppxPackage -AllUsers)
 $AppxProvisionedBlacklist = [Collections.Generic.List[object]]@((Get-AppxProvisionedPackage -Online).Where({`
                 $_.DisplayName -notin $AppxWhitelist }));
 
+# Splatting for Write-Prompt function options
 $WritePromptParams = @{
     Message = "`nAre you sure?";
     LabelA  = "Yes";
@@ -94,6 +95,8 @@ $WritePromptParams = @{
     HelpB   = "Do not remove apps";
 }
 
+<# Writes a prompt to show all provisioned apps and then finds and removes any apps that the user specifies 
+until the Write-Prompt function produces an output not equal to 1 (1 is assigned to "No") #>
 try {
     [System.Console]::Clear();
     [System.Console]::ForegroundColor = 'Cyan';
