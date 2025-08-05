@@ -20,7 +20,7 @@ function Send-ScreeningAlert {
 }
 
 # Declare variables.
-[int32]$ScreeningNumber = 128;
+[int32]$ScreeningNumber = 129;
 $RestParams = @{
     Uri         = "https://drafthouse.com/s/mother/v2/schedule/presentation/dfw/secret-society-$ScreeningNumber";
     ErrorAction = "Stop"
