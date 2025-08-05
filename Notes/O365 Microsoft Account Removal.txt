@@ -1,0 +1,25 @@
+This worked on STRIVE's conference room PC:
+
+If the issue persists, sign out of all Microsoft 365 apps, remove all folders in the following locations, and then sign in again:
+
+a)  Open Word.  Sign out every account.
+b)  Open Windows Settings -> Accounts -> Access work or school -> Disconnect.
+c)  Rename the following folders to *.bak.
+
+\users\*user*\AppData\Local\Microsoft\OneAuth
+\users\*user*\AppData\Local\Microsoft\IdentityCache
+
+d) Reboot.  Try to open Word, log back in.
+
+Go here for more info if needed:
+
+https://learn.microsoft.com/en-us/office/troubleshoot/activation/another-account-already-signed-in
+
+#*==================================================================================
+ALTERNATIVE SOLUTION (Lane's solution)
+
+1. Open Command Prompt
+2. Type the following --> dsregcmd /cleanupaccounts
+3. Hit enter. This will remove any accounts stored by the WAM (Web Account Manager)
+4. Reboot and try to log back in by opening Word
+#*==================================================================================
