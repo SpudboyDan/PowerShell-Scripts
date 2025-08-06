@@ -1,0 +1,15 @@
+C:\Users\Craig\Documents\PowerShell\CSharp\CopyFiles\bin\Debug\net9.0\CopyFiles.exe
+C:\Users\Craig\Documents\PowerShell\CSharp\CopyFiles\bin\Debug\net9.0\CopyFiles.deps.json
+C:\Users\Craig\Documents\PowerShell\CSharp\CopyFiles\bin\Debug\net9.0\CopyFiles.runtimeconfig.json
+C:\Users\Craig\Documents\PowerShell\CSharp\CopyFiles\bin\Debug\net9.0\CopyFiles.dll
+C:\Users\Craig\Documents\PowerShell\CSharp\CopyFiles\bin\Debug\net9.0\CopyFiles.pdb
+C:\Users\Craig\Documents\PowerShell\CSharp\CopyFiles\obj\Debug\net9.0\CopyFiles.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Craig\Documents\PowerShell\CSharp\CopyFiles\obj\Debug\net9.0\CopyFiles.AssemblyInfoInputs.cache
+C:\Users\Craig\Documents\PowerShell\CSharp\CopyFiles\obj\Debug\net9.0\CopyFiles.AssemblyInfo.cs
+C:\Users\Craig\Documents\PowerShell\CSharp\CopyFiles\obj\Debug\net9.0\CopyFiles.csproj.CoreCompileInputs.cache
+C:\Users\Craig\Documents\PowerShell\CSharp\CopyFiles\obj\Debug\net9.0\CopyFiles.sourcelink.json
+C:\Users\Craig\Documents\PowerShell\CSharp\CopyFiles\obj\Debug\net9.0\CopyFiles.dll
+C:\Users\Craig\Documents\PowerShell\CSharp\CopyFiles\obj\Debug\net9.0\refint\CopyFiles.dll
+C:\Users\Craig\Documents\PowerShell\CSharp\CopyFiles\obj\Debug\net9.0\CopyFiles.pdb
+C:\Users\Craig\Documents\PowerShell\CSharp\CopyFiles\obj\Debug\net9.0\CopyFiles.genruntimeconfig.cache
+C:\Users\Craig\Documents\PowerShell\CSharp\CopyFiles\obj\Debug\net9.0\ref\CopyFiles.dll
