@@ -1,0 +1,5 @@
+C:\Users\Lane\Documents\PowerShell\CSharp\FindDuplicateFiles\obj\Debug\net9.0\FindDuplicateFiles.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Lane\Documents\PowerShell\CSharp\FindDuplicateFiles\obj\Debug\net9.0\FindDuplicateFiles.AssemblyInfoInputs.cache
+C:\Users\Lane\Documents\PowerShell\CSharp\FindDuplicateFiles\obj\Debug\net9.0\FindDuplicateFiles.AssemblyInfo.cs
+C:\Users\Lane\Documents\PowerShell\CSharp\FindDuplicateFiles\obj\Debug\net9.0\FindDuplicateFiles.csproj.CoreCompileInputs.cache
+C:\Users\Lane\Documents\PowerShell\CSharp\FindDuplicateFiles\obj\Debug\net9.0\FindDuplicateFiles.sourcelink.json
