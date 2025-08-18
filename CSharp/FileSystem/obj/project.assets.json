@@ -8,19 +8,19 @@
     "net9.0": []
   },
   "packageFolders": {
-    "C:\\Users\\Craig\\.nuget\\packages\\": {}
+    "C:\\Users\\Lane\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Craig\\Documents\\PowerShell\\CSharp\\FileSystem\\FileSystem.csproj",
+      "projectUniqueName": "C:\\Users\\Lane\\Documents\\PowerShell\\CSharp\\FileSystem\\FileSystem.csproj",
       "projectName": "FileSystem",
-      "projectPath": "C:\\Users\\Craig\\Documents\\PowerShell\\CSharp\\FileSystem\\FileSystem.csproj",
-      "packagesPath": "C:\\Users\\Craig\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Craig\\Documents\\PowerShell\\CSharp\\FileSystem\\obj\\",
+      "projectPath": "C:\\Users\\Lane\\Documents\\PowerShell\\CSharp\\FileSystem\\FileSystem.csproj",
+      "packagesPath": "C:\\Users\\Lane\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Lane\\Documents\\PowerShell\\CSharp\\FileSystem\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Craig\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\Lane\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net9.0"

@@ -3,3 +3,13 @@ C:\Users\Lane\Documents\PowerShell\CSharp\FindDuplicateFiles\obj\Debug\net9.0\Fi
 C:\Users\Lane\Documents\PowerShell\CSharp\FindDuplicateFiles\obj\Debug\net9.0\FindDuplicateFiles.AssemblyInfo.cs
 C:\Users\Lane\Documents\PowerShell\CSharp\FindDuplicateFiles\obj\Debug\net9.0\FindDuplicateFiles.csproj.CoreCompileInputs.cache
 C:\Users\Lane\Documents\PowerShell\CSharp\FindDuplicateFiles\obj\Debug\net9.0\FindDuplicateFiles.sourcelink.json
+C:\Users\Lane\Documents\PowerShell\CSharp\FindDuplicateFiles\bin\Debug\net9.0\FindDuplicateFiles.exe
+C:\Users\Lane\Documents\PowerShell\CSharp\FindDuplicateFiles\bin\Debug\net9.0\FindDuplicateFiles.deps.json
+C:\Users\Lane\Documents\PowerShell\CSharp\FindDuplicateFiles\bin\Debug\net9.0\FindDuplicateFiles.runtimeconfig.json
+C:\Users\Lane\Documents\PowerShell\CSharp\FindDuplicateFiles\bin\Debug\net9.0\FindDuplicateFiles.dll
+C:\Users\Lane\Documents\PowerShell\CSharp\FindDuplicateFiles\bin\Debug\net9.0\FindDuplicateFiles.pdb
+C:\Users\Lane\Documents\PowerShell\CSharp\FindDuplicateFiles\obj\Debug\net9.0\FindDuplicateFiles.dll
+C:\Users\Lane\Documents\PowerShell\CSharp\FindDuplicateFiles\obj\Debug\net9.0\refint\FindDuplicateFiles.dll
+C:\Users\Lane\Documents\PowerShell\CSharp\FindDuplicateFiles\obj\Debug\net9.0\FindDuplicateFiles.pdb
+C:\Users\Lane\Documents\PowerShell\CSharp\FindDuplicateFiles\obj\Debug\net9.0\FindDuplicateFiles.genruntimeconfig.cache
+C:\Users\Lane\Documents\PowerShell\CSharp\FindDuplicateFiles\obj\Debug\net9.0\ref\FindDuplicateFiles.dll

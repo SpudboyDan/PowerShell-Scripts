@@ -1,23 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 
-namespace ConsoleUI
+public class FileLength
 {
-	class Program
+	public static void Main()
 	{
-		static void Main(string[] args)
+		// New directory reference
+		DirectoryInfo dirInfo = new DirectoryInfo(@"C:\Users\Lane\Documents\PowerShell\Scripts\PowerShell");
+		// Reference to each file in that directory
+		FileInfo[] fileArray = dirInfo.GetFiles();
+		// Display file names and sizes
+		Console.WriteLine("The directory {0} contains the following files:", dirInfo.Name);
+		foreach (FileInfo fileInf in fileArray)
 		{
-			string rootPath = @"C:\Users\Craig\Documents\PowerShell";
-			string[] dirs = Directory.GetDirectories(rootPath, "*", SearchOption.AllDirectories);
-
-			foreach (string dir in dirs)
-			{
-				Console.WriteLine(dir);
-			}
-			Console.ReadLine();
+			Console.WriteLine("The size of {0} is {1} bytes.", fileInf.Name, fileInf.Length);
 		}
 	}
 }
