@@ -6,3 +6,4 @@ Modules/Microsoft.PowerToys.Configure/**
 Modules/Microsoft.WinGet.Client/**
 Modules/PSScriptAnalyzer/**
 Modules/ExchangeOnlineManagement/**
+Scripts/PowerShell/Secret Society Alert.ps1
