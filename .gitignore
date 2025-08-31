@@ -7,3 +7,5 @@ Modules/Microsoft.WinGet.Client/**
 Modules/PSScriptAnalyzer/**
 Modules/ExchangeOnlineManagement/**
 Scripts/PowerShell/Secret Society Alert.ps1
+PowerShell/Scripts/PowerShell/Dismember Alert.ps1
+PowerShell/Scripts/PowerShell/Dismember Alert 2.ps1
