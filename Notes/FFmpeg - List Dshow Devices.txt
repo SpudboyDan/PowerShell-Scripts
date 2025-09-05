@@ -1,0 +1,1 @@
+ffmpeg -f dshow -list_devices true -i dummy

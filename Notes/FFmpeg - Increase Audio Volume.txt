@@ -1,0 +1,1 @@
+ffmpeg -i input.wav -filter:a "volume=1.5" output.wav

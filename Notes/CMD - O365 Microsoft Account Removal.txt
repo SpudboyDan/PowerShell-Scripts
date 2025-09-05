@@ -22,4 +22,5 @@ ALTERNATIVE SOLUTION (Lane's solution)
 2. Type the following --> dsregcmd /cleanupaccounts
 3. Hit enter. This will remove any accounts stored by the WAM (Web Account Manager)
 4. Reboot and try to log back in by opening Word
+
 #*==================================================================================

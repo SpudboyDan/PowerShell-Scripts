@@ -1,0 +1,40 @@
+*** SYSTEM FILE CHECKER ***
+Core Windows system files can become corrupted and cause general issues with responsiveness and lagging.
+To check for and repair these issues, first, open command prompt as an administrator, then type the following:
+
+SFC /SCANNOW
+
+Let this run for as long as it needs and it will return a status message.
+Even if it says that no corrupt files were found, you should continue with the rest of these steps.
+Next, restart the machine.
+
+
+*** DEPLOYMENT IMAGE SERVICING AND MANAGEMENT TOOL ***
+After restarting, open command prompt as an administrator, then type the following:
+
+DISM /ONLINE /CLEANUP-IMAGE /RESTOREHEALTH
+
+*** IMPORTANT ***
+With especially troublesome and problematic windows installations, this can take a LONG time.
+Even if you see the progress bar stuck, do NOT end things early! Often times it will get stuck at 62.3%, but rest assured,
+it will eventually finish. Let it do its job.
+
+*** COMPONENT STORE CLEANUP ***
+Type the following:
+
+DISM /ONLINE /CLEANUP-IMAGE /STARTCOMPONENTCLEANUP
+
+Once this finishes, restart the machine.
+
+
+*** RINSE AND REPEAT ***
+Finally, it's usually good to run System File Checker an additional time. DISM and SFC work with and complement eachother
+to maintain a clean Windows installation, so once DISM has "restored to baseline",
+you should run SFC once more on the newly-clean image.
+
+Open command prompt as an administrator and type the following:
+
+SFC /SCANNOW
+
+If you'd like, you can run DISM an additional time after restarting, but in my experience I've found this to be unnecessary. 
+That's it. You're finished!

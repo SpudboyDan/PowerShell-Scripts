@@ -1,0 +1,21 @@
+#*========================================================================================================
+Sourced from:
+https://trac.ffmpeg.org/wiki/How%20to%20speed%20up%20/%20slow%20down%20a%20video
+# ========================================================================================================
+This example assumes:
+	a.) your source video is 30fps
+	b.) you want to double the speed
+# ========================================================================================================
+
+	1. Output video to raw bitstream
+		h264:	ffmpeg -i input.mp4 -map 0:v -c:v copy -bsf:v h264_mp4toannexb raw.h264
+		h265:	ffmpeg -i input.mp4 -map 0:v -c:v copy -bsf:v hevc_mp4toannexb raw.h265	
+	
+	2. Output bitstream to file with new timestamps for desired framerate
+		ffmpeg -fflags +genpts -r 60 -i raw.h264 -map 0:v -c:v h264 -movflags faststart output.mp4
+	
+	3. Remux with audio if desired
+		ffmpeg -i input.mp4 -i input.mp4 -map 0:v -c:v copy -map 1:a -af atempo=2.0 output.mp4
+
+#*========================================================================================================
+
