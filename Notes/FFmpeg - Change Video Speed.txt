@@ -2,9 +2,11 @@
 Sourced from:
 https://trac.ffmpeg.org/wiki/How%20to%20speed%20up%20/%20slow%20down%20a%20video
 # ========================================================================================================
+
 This example assumes:
 	a.) your source video is 30fps
 	b.) you want to double the speed
+
 # ========================================================================================================
 
 	1. Output video to raw bitstream

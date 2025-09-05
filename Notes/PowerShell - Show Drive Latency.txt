@@ -1,3 +1,4 @@
+#*===========================================================================================================================
 *** SHOW DRIVE LATENCY ***
 
 Use these commands to measure drive latency if you suspect there are issues with a drive you're using.
@@ -8,3 +9,4 @@ then there is likely an issue with the drive.
 This example assumes that your C-Drive (OS) is registered as Device Number 0 by PowerShell.
 
 Get-PhysicalDisk -DeviceNumber 0 | Get-StorageReliabilityCounter | Select-Object -Property ReadLatencyMax, WriteLatencyMax
+#*===========================================================================================================================
