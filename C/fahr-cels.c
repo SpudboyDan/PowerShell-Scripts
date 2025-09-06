@@ -15,7 +15,7 @@ int main()
 
 	fahr = lower;
 	
-	printf("%s\t", "    Fahrenheit");
+	printf("%s\t", "   Fahrenheit");
 	printf("%s\n", "Celsius");
 
 	while (fahr <= upper) {
