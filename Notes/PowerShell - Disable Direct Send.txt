@@ -1,0 +1,44 @@
+#*==================================================================================================
+*** DISABLE DIRECT SEND FOR EXCHANGE ONLINE ***
+
+1. Open the Windows Terminal. Search for it in the search bar, or simply press the Windows Key + X,
+   then press "i" on your keyboard.
+
+2. First, you should make sure you're using PowerShell 7. If you aren't, install it using the 
+   following commands:
+   	winget source update && winget install --id Microsoft.PowerShell
+
+3. Install the ExchangeOnlineManagement module from PSGallery using the following command:
+	Install-Module -Name ExchangeOnlineManagement
+
+4. If the module is already installed, I recommend running the following command:
+	Update-Module
+
+5. Next, run the following command (using PowerShell 7) to connect to Exchange Online:
+	Connect-ExchangeOnline
+
+6. You will be prompted to enter credentials for whichever organization you need to check on. Enter
+   your credentials and follow the prompts. Make sure you select "No, this app only" instead of
+   "Yes, all apps" when you are prompted to "Automatically sign in to all desktop apps and 
+   websites on this device?"
+
+7. Once you are connected, type the following commands:
+	Get-OrganizationConfig | Format-List -Property Identity, RejectDirectSend
+
+8. If the output of the previous commands looks like this, then you don't need to make any changes: 
+	Identity         : example-domain.com
+   	RejectDirectSend : True
+
+9. If the output of step 7 looks like the following:
+	Identity         : example-domain.com
+	RejectDirectSend : False
+   
+   Run the following command:
+   	Set-OrganizationConfig -RejectDirectSend $true
+
+10. You can check to see if this change was successful by running the commands from step 7 again:
+	Get-OrganizationConfig | Format-List -Property Identity, RejectDirectSend
+
+11. Finally, you must disconnect the session using the following command:
+	Disconnect-ExchangeOnline
+#*==================================================================================================
