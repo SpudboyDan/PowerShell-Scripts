@@ -1,0 +1,1 @@
+ffmpeg -i in.mov -map_metadata -1 -c copy -map 0 out.mov
