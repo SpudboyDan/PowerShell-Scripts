@@ -1,0 +1,14 @@
+#*===========================================================
+*** DISABLE PERSONAL ONEDRIVE ***
+#*===========================================================
+
+1.) Go to the personal OneDrive settings and click on "Account", then click "Unlink this PC".
+
+2.) Open RegEdit and go to this path:
+    HKEY_CURRENT_USER\SOFTWARE\Microsoft\OneDrive
+
+3.) Right-Click on the "OneDrive" folder, click "New", then add a DWORD (32-bit Value) and name it "DisablePersonalSync".
+
+4.) Double-Click on the newly created entry, then modify the value to "1".
+
+#*===========================================================
