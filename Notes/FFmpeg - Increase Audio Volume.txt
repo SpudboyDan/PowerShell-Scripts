@@ -1,1 +1,1 @@
-ffmpeg -i input.wav -filter:a "volume=1.5" output.wav
+ffmpeg -i in.mov -filter:a "volume=1.5" out.mov
