@@ -37,5 +37,3 @@ Set-Volume -DriveLetter 'C' -NewFileSystemLabel 'C-Drive';
 Set-TimeZone 'Central Standard Time';
 Start-Service W32Time;
 w32tm /resync;
-
-Invoke-WebRequest -Uri "https://helpdesksupport370316312.servicedesk.atera.com/GetAgent/Msi/?customerId=1&integratorLogin=craig%40metro-tech.net" -OutFile "$env:USERPROFILE\Downloads\AteraAgent.msi";
