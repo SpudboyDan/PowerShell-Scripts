@@ -1,4 +1,5 @@
-﻿function Get-KHInsiderMP3 {
+﻿# Script to mass-download music from downloads.khinsider.com
+function Get-KHInsiderMP3 {
     [CmdletBinding()]
     param ([Parameter(Mandatory = $true, Position = 0)]
         [ValidateNotNull()]
@@ -10,11 +11,11 @@
         [string]$subPattern = $linkPattern.Split("/")[3];
 
         $mp3Files = [System.Collections.Generic.List[string]]@(foreach ($link in $links) {
-                (Invoke-WebRequest -Uri "https://downloads.khinsider.com$link").Links.Href.Where({ $_ -match "https://[a-z0-9\%\-\./]+$subPattern[a-z0-9\%\-\./]+mp3" }) 
+                (Invoke-WebRequest -Uri "https://downloads.khinsider.com$link").Links.Href.Where({ $_ -match "https://[a-z0-9\%\-\./]+$subPattern[a-z0-9\%\-\./~]+mp3" }) 
             });
 
         $flacFiles = [System.Collections.Generic.List[string]]@(foreach ($link in $links) {
-                (Invoke-WebRequest -Uri "https://downloads.khinsider.com$link").Links.Href.Where({ $_ -match "https://[a-z0-9\%\-\./]+$subPattern[a-z0-9\%\-\./]+flac" })
+                (Invoke-WebRequest -Uri "https://downloads.khinsider.com$link").Links.Href.Where({ $_ -match "https://[a-z0-9\%\-\./]+$subPattern[a-z0-9\%\-\./~]+flac" })
             });
     }
     catch {

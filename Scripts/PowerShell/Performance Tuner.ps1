@@ -1,19 +1,4 @@
-﻿$newComputerName = Read-Host "What would you like to name this computer?";
-$secureString = (Read-Host -AsSecureString "Please enter a password for drive W");
-$secureCredential = New-Object System.Management.Automation.PSCredential("$null", $secureString);
-$cimComputerSys = Get-CimInstance -ClassName Win32_ComputerSystem;
-$modelName = $cimComputerSys | Select-Object -ExpandProperty Model;
-$productNumber = $cimComputerSys | Select-Object -ExpandProperty SystemSKUNumber;
-$serialNumber = Get-CimInstance -ClassName Win32_ComputerSystemProduct | Select-Object -ExpandProperty IdentifyingNumber;
-$cimComputerSys | Set-CimInstance -Property @{AutomaticManagedPageFile = $false };
-
-Rename-Computer -NewName $newComputerName;
-New-PSDrive -Name "W" -PSProvider FileSystem -Root "$null" -Scope Global -Persist -Credential $secureCredential;
-New-Item -ItemType Directory -Path "C:\Driver", "C:\Util.w", "C:\Temp";
-New-Item -ItemType Directory -Path "$env:USERPROFILE\AppData\Roaming\GHISLER";
-New-Item -ItemType Directory -Path "C:\Driver\! $modelName";
-New-Item -ItemType Directory -Path "C:\Driver\! PN $productNumber";
-New-Item -ItemType Directory -Path "C:\Driver\! SN $serialNumber";
+﻿$cimComputerSys | Set-CimInstance -Property @{AutomaticManagedPageFile = $false };
 
 Get-CimInstance -ClassName Win32_PageFileSetting | Set-CimInstance -Property @{InitialSize = 16384; MaximumSize = 16384 };
 
@@ -33,25 +18,11 @@ else {
     Write-Host "BitLocker is already disabled."
 }
 
-Set-Volume -DriveLetter 'C' -NewFileSystemLabel 'C-Drive';
 Set-TimeZone 'Central Standard Time';
 Start-Service W32Time;
 w32tm /resync;
-Copy-Item -Path "W:\01 Main\Util.w\Wincmd.INI" -Destination "$env:USERPROFILE\AppData\Roaming\GHISLER" -Force -Recurse;
-Copy-Item -Path "W:\01 Main\Util.w\wcx_ftp.ini" -Destination "$env:USERPROFILE\AppData\Roaming\GHISLER" -Force -Recurse;
-Copy-Item -Path "W:\01 Main\Util.w\WINCMD.INI" -Destination "C:\Windows" -Force -Recurse;
-Copy-Item -Path "W:\01 Main\Util.w\wcx_ftp.ini" -Destination "C:\Windows" -Force -Recurse;
-Copy-Item -Path "W:\01 Main\Util.w\Wincmd" -Destination "C:\Util.w" -Recurse;
-Copy-Item -Path "W:\01 Main\Util.w\Advanced IP Scanner 2.5" -Destination "C:\Util.w" -Recurse;
-Copy-Item -Path "W:\01 Main\Util.w\IrfanView" -Destination "C:\Util.w" -Recurse;
-Copy-Item -Path "W:\00 Essentials\Cleanup" -Destination "C:\Temp" -Recurse;
-Copy-Item -Path "W:\00 Essentials\Utilities" -Destination "C:\Temp" -Recurse;
-Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers" -Name "C:\Util.w\Wincmd\TOTALCMD64.EXE" -Type String -Value '~ RUNASADMIN';
-Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers" -Name "C:\Util.w\Wincmd\TOTALCMD.EXE" -Type String -Value '~ RUNASADMIN';
 Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Remote Assistance" -Name fAllowToGetHelp -Type DWord -Value 00000000;
 Set-NetFirewallRule -DisplayGroup "Remote Assistance" -Enabled False;
-Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name ConsentPromptBehaviorAdmin -Type DWord -Value 00000005;
-Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name PromptOnSecureDesktop -Type DWord -Value 00000000;
 Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes" -Name ThemeChangesMousePointers -Type DWord -Value 00000000;
 Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes" -Name ThemeChangesDesktopIcons -Type DWord -Value 00000000;
 Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" -Name EnableTransparency -Type DWord -Value 00000000;
@@ -142,7 +113,6 @@ else {
     New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\bluetoothSync" -Force -Name Value -PropertyType String -Value Deny;
 }
 
-New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Search" -Name BingSearchEnabled -PropertyType Dword -Value 00000000;
 New-ItemProperty -Path "HKCU:\Control Panel\International\User Profile" -Name HttpAcceptLanguageOptOut -PropertyType DWord -Value 00000001;
 New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name Start_AccountNotifications -PropertyType DWord -Value 00000000; 
 Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name RotatingLockScreenEnabled -Type DWord -Value 00000000;
@@ -162,13 +132,6 @@ Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer
 Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name TaskbarDa -Type DWord -Value 00000000;
 Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name ShowSecondsInSystemClock -Type DWord -Value 00000001;
 Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Search" -Name SearchboxTaskbarMode -Type DWord -Value 00000001;
-Set-ItemProperty -Path "HKCU:\Software\Microsoft\GameBar" -Name AutoGameModeEnabled -Type DWord -Value 00000000;
-Set-ItemProperty -Path "HKCU:\Software\Microsoft\GameBar" -Name UseNexusForGameBarEnabled -Type DWord -Value 00000000;
-Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\GameDVR" -Name AudioCaptureEnabled -Type DWord -Value 00000000;
-Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\GameDVR" -Name CursorCaptureEnabled -Type DWord -Value 00000000;
-Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\GameDVR" -Name HistoricalCaptureEnabled -Type DWord -Value 00000000;
-Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\GameDVR" -Name HistoricalCaptureOnBatteryAllowed -Type DWord -Value 00000000;
-Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\GameDVR" -Name HistoricalCaptureOnWirelessDisplayAllowed -Type DWord -Value 00000000;
 Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo" -Name Enabled -Type DWord -Value 00000000;
 Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\SystemSettings\AccountNotifications" -Name EnableAccountNotifications -Type DWord -Value 00000000;
 Set-ItemProperty -Path "HKCU:\Software\Microsoft\Personalization\Settings" -Name AcceptedPrivacyPolicy -Type DWord -Value 00000000;
