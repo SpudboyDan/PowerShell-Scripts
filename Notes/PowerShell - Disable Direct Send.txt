@@ -41,4 +41,5 @@
 
 11. Finally, you must disconnect the session using the following command:
 	Disconnect-ExchangeOnline
+
 #*==================================================================================================

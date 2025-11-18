@@ -61,6 +61,8 @@ $AppxWhitelist = [Collections.Generic.List[string]]@(
     "Microsoft.WidgetsPlatformRuntime",
     "Microsoft.WinAppRuntime.DDLM.5001.311.2039.0-x6",
     "Microsoft.WinAppRuntime.DDLM.5001.311.2039.0-x8",
+    "Microsoft.WinAppRuntime.DDLM.8000.642.119.0-x6"
+    "Microsoft.WinAppRuntime.DDLM.8000.642.119.0-x8"
     "Microsoft.Windows.Photos",
     "Microsoft.Winget.Source",
     "Microsoft.WindowsAlarms",
@@ -72,6 +74,7 @@ $AppxWhitelist = [Collections.Generic.List[string]]@(
     "Microsoft.WindowsTerminal",
     "MicrosoftCorporationII.QuickAssist",
     "MicrosoftCorporationII.WinAppRuntime.Main.1.5",
+    "MicrosoftCorporationII.WinAppRuntime.Main.1.8"
     "MicrosoftCorporationII.WinAppRuntime.Singleton",
     "MicrosoftWindows.Client.WebExperience",
     "MicrosoftWindows.CrossDevice",

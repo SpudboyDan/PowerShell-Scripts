@@ -7,10 +7,12 @@
 #	Get-AteraAgent
 #	Get-AteraCustomer
 #	Get-KHInsiderMP3
-# 	Invoke-LightSwitch
 # 	New-StartShortcut
 # 	Set-Keybind
 # 	Write-Version
+#	
+#	Retired:
+# 	Invoke-LightSwitch
 #
 # Load Modules
 # ================================================================================
