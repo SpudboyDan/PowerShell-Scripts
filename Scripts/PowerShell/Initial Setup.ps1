@@ -10,7 +10,6 @@ $cimComputerSys | Set-CimInstance -Property @{AutomaticManagedPageFile = $false 
 Rename-Computer -NewName $newComputerName;
 New-PSDrive -Name "W" -PSProvider FileSystem -Root "$null" -Scope Global -Persist -Credential $secureCredential;
 New-Item -ItemType Directory -Path "C:\Driver", "C:\Util.w", "C:\Temp";
-New-Item -ItemType Directory -Path "$env:USERPROFILE\AppData\Roaming\GHISLER";
 New-Item -ItemType Directory -Path "C:\Driver\! $modelName";
 New-Item -ItemType Directory -Path "C:\Driver\! PN $productNumber";
 New-Item -ItemType Directory -Path "C:\Driver\! SN $serialNumber";
@@ -37,8 +36,6 @@ Set-Volume -DriveLetter 'C' -NewFileSystemLabel 'C-Drive';
 Set-TimeZone 'Central Standard Time';
 Start-Service W32Time;
 w32tm /resync;
-Copy-Item -Path "W:\01 Main\Util.w\Wincmd.INI" -Destination "$env:USERPROFILE\AppData\Roaming\GHISLER" -Force -Recurse;
-Copy-Item -Path "W:\01 Main\Util.w\wcx_ftp.ini" -Destination "$env:USERPROFILE\AppData\Roaming\GHISLER" -Force -Recurse;
 Copy-Item -Path "W:\01 Main\Util.w\WINCMD.INI" -Destination "C:\Windows" -Force -Recurse;
 Copy-Item -Path "W:\01 Main\Util.w\wcx_ftp.ini" -Destination "C:\Windows" -Force -Recurse;
 Copy-Item -Path "W:\01 Main\Util.w\Wincmd" -Destination "C:\Util.w" -Recurse;
