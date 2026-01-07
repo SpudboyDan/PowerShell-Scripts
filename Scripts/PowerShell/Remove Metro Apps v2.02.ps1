@@ -59,10 +59,10 @@ $AppxWhitelist = [Collections.Generic.List[string]]@(
     "Microsoft.WebMediaExtensions",
     "Microsoft.WebpImageExtension",
     "Microsoft.WidgetsPlatformRuntime",
-    "Microsoft.WinAppRuntime.DDLM.5001.311.2039.0-x6",
-    "Microsoft.WinAppRuntime.DDLM.5001.311.2039.0-x8",
     "Microsoft.WinAppRuntime.DDLM.8000.642.119.0-x6"
     "Microsoft.WinAppRuntime.DDLM.8000.642.119.0-x8"
+    "Microsoft.WinAppRuntime.DDLM.8000.675.1142.0-x6"
+    "Microsoft.WinAppRuntime.DDLM.8000.675.1142.0-x8"
     "Microsoft.Windows.Photos",
     "Microsoft.Winget.Source",
     "Microsoft.WindowsAlarms",
@@ -80,7 +80,35 @@ $AppxWhitelist = [Collections.Generic.List[string]]@(
     "MicrosoftWindows.CrossDevice",
     "NcsiUwpApp",
     "NVIDIACorp.NVIDIAControlPanel",
-    "RealtekSemiconductorCorp.RealtekAudioControl");
+    "RealtekSemiconductorCorp.RealtekAudioControl"
+    "WindowsWorkload.Data.Analysis.Lnl.1"
+    "WindowsWorkload.Data.ContentExtraction.Lnl.1"
+    "WindowsWorkload.Data.ImageSearch.Lnl.1"
+    "WindowsWorkload.Data.SettingsModel.Lnl.1"
+    "WindowsWorkload.ImageContentModeration.1"
+    "WindowsWorkload.ImageContentModeration.Data.1"
+    "WindowsWorkload.ImageSearch.Data.3"
+    "WindowsWorkload.ImageSearch.Lnl.2"
+    "WindowsWorkload.ImageSearch.Lnl.3"
+    "WindowsWorkload.ImageTextSearch.Data.3"
+    "WindowsWorkload.ImageTextSearch.Lnl.2"
+    "WindowsWorkload.ImageTextSearch.Lnl.3"
+    "WindowsWorkload.Manager.1"
+    "WindowsWorkload.PSOnnxRuntime.Lnl.4.1"
+    "WindowsWorkload.PSTokenizer.Lnl.2.7"
+    "WindowsWorkload.PSTokenizerShared.Data.4.1"
+    "WindowsWorkload.PSTokenizerShared.Lnl.4.1"
+    "WindowsWorkload.QueryBlockList.1"
+    "WindowsWorkload.QueryProcessor.Data.1"
+    "WindowsWorkload.QueryProcessor.Lnl.1"
+    "WindowsWorkload.ScrRegDetection.Data.1"
+    "WindowsWorkload.ScrRegDetection.Lnl.1"
+    "WindowsWorkload.SemanticText.Data.1"
+    "WindowsWorkload.SemanticText.Lnl.1"
+    "WindowsWorkload.SessionManager.1"
+    "WindowsWorkload.SettingsModel.Data.1"
+    "WindowsWorkload.SettingsModel.Lnl.1"
+    "WindowsWorkload.TextRecognition.Lnl.1");
 
 $AppxBlacklist = [Collections.Generic.List[object]]@((Get-AppxPackage -AllUsers).Where({`
                 $_.Name -notin $AppxWhitelist -and $_.IsFramework -eq $false -and $_.NonRemovable -eq $false }));
