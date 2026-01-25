@@ -1,0 +1,15 @@
+vacation_spots = ['Paris', 'Tokyo', 'Kauai', 'Berlin', 'London']
+print(vacation_spots)
+
+print(f"\n{sorted(vacation_spots)}")
+print(f"\n{vacation_spots}")
+print(f"\n{sorted(vacation_spots, reverse=True)}")
+print(f"\n{vacation_spots}")
+vacation_spots.reverse()
+print(f"\n{vacation_spots}")
+vacation_spots.reverse()
+print(f"\n{vacation_spots}")
+vacation_spots.sort()
+print(f"\n{vacation_spots}")
+vacation_spots.sort(reverse=True)
+print(f"\n{vacation_spots}")
